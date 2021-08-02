@@ -7,7 +7,15 @@
 
 # Configure
 Registration in https://cloud.ibm.com/ get API key and URL.  
-Edit .env file. 
+Create .env file: 
+```
+PATH_MODULE=""
+MODULE_NAME=""
+TRANSLATE_TO_ENG=""
+IBM_API_KEY=""
+IBM_URL=""
+```
+and edit .env file. 
 
 # Use
 ```
