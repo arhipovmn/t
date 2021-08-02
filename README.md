@@ -9,9 +9,9 @@
 Registration in https://cloud.ibm.com/ get API key and URL.  
 Create .env file: 
 ```
-PATH_MODULE=""
-MODULE_NAME=""
-TRANSLATE_TO_ENG=""
+PATH_MODULE="С:\\patch\\to\\folder\\core\\js\\newCore\\folder"
+MODULE_NAME="mbo"
+TRANSLATE_TO_ENG="N"
 IBM_API_KEY=""
 IBM_URL=""
 ```
