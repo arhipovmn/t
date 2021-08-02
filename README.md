@@ -6,7 +6,6 @@
 ```
 
 # Configure
-Registration in https://cloud.ibm.com/ get API key and URL.  
 Create .env file: 
 ```
 PATH_MODULE="С:\\patch\\to\\folder\\core\\js\\newCore\\folder"
@@ -16,6 +15,8 @@ IBM_API_KEY=""
 IBM_URL=""
 ```
 and edit .env file. 
+
+Not necessary: registration in https://cloud.ibm.com/, get API key and URL.
 
 # Use
 ```
