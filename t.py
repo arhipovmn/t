@@ -334,17 +334,13 @@ def markNoTranslite(file: os.DirEntry, lines: List[str], numLine: int, textExclu
             f.writelines(lines)
             f.close()
     else:
-        repeat = input('Повторить перевод? (y/n): ')
-        if (repeat == 'Y' or repeat == 'y'):
-            translite(file, lines, numLine, textExclusion, textInclusion)
-        else:
-            repeat = input(
+        repeat = input(
                 'Перейти снова к выбору действий для данной строки? (y/n): ')
-            if (repeat == 'Y' or repeat == 'y'):
-                selectAction(file, lines, numLine,
-                             textExclusion, textInclusion)
-            else:
-                print('', end='\n\n')
+        if (repeat == 'Y' or repeat == 'y'):
+            selectAction(file, lines, numLine,
+                            textExclusion, textInclusion)
+        else:
+            print('', end='\n\n')
 
 
 def selectKeyTranslite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: str, textInclusion: str) -> None:
