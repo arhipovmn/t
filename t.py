@@ -127,7 +127,7 @@ def saveResources() -> None:
         text = ''
         for key in resources:
             if (type(resources[key]) == str):
-                text = text+space+key+': '+resources[key]+',\n'
+                text = text+space+key+': \''+resources[key]+'\',\n'
             else:
                 text = text+space+key + \
                     ': {\n'+getText(resources[key],
