@@ -153,7 +153,8 @@ def getVarText(varList: Union[List[dict], List]) -> str:
     if (varList != None and len(varList)):
         varTextList = []
         for var in varList:
-            varTextList.append(var['varName']+': '+var['value'] if var['varName'] != var['value'] else var['varName'])
+            varTextList.append(var['varName']+': '+var['value']
+                               if var['varName'] != var['value'] else var['varName'])
         varText = ', '.join(varTextList)
     return varText
 
@@ -372,17 +373,13 @@ def selectKeyTranslite(file: os.DirEntry, lines: List[str], numLine: int, textEx
             f.writelines(lines)
             f.close()
     else:
-        repeat = input('Повторить перевод? (y/n): ')
+        repeat = input(
+            'Перейти снова к выбору действий для данной строки? (y/n): ')
         if (repeat == 'Y' or repeat == 'y'):
-            translite(file, lines, numLine, textExclusion, textReplace)
+            selectAction(file, lines, numLine,
+                         textExclusion, textReplace)
         else:
-            repeat = input(
-                'Перейти снова к выбору действий для данной строки? (y/n): ')
-            if (repeat == 'Y' or repeat == 'y'):
-                selectAction(file, lines, numLine,
-                             textExclusion, textReplace)
-            else:
-                print('', end='\n\n')
+            print('', end='\n\n')
 
 
 def selectAction(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: str, textReplace: str) -> None:
