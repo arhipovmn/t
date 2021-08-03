@@ -248,7 +248,7 @@ def translite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: 
         varText = getVarText(checkVar(tEn))
         print('', end='\n')
         print(Fore.MAGENTA +
-              'Для построения дерева ключей можно использовать символ "."\nНапример при вводе: error.getData - итоговое выражение для перевода будет таким: t(\''+moduleName+'.error.getData\', { ... })\nИмя модуля ('+moduleName+') добавляется автоматически.\nA файл с переводом будет добавлено:\n\nerror: {\n   getData: \''+tRu+'\',\n},', end='\n\n')
+              'Для построения дерева ключей можно использовать символ "."\n----------\nНапример при вводе: example.getData - итоговое выражение для перевода будет таким: t(\''+moduleName+'.example.getData\', { ... })\nИмя модуля ('+moduleName+') добавляется автоматически.\nA файл с переводом будет добавлено:\n\nerror: {\n   getData: \''+tRu+'\',\n},\n----------', end='\n\n')
         # print('Предлагаем следующий ключ: ....................', end='\n')
         tKey = input('Напишите ключ для перевода: ')
         if tKey == '':
