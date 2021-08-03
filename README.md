@@ -24,4 +24,4 @@ Not necessary: registration in https://cloud.ibm.com/, get API key and URL.
 ```
 
 ## Exampel
-(https://i.ibb.co/k47w4Cv/Video-2021-08-03-125045.gif)
+![Exampel](https://i.ibb.co/k47w4Cv/Video-2021-08-03-125045.gif)
