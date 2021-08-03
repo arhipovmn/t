@@ -153,7 +153,7 @@ def getVarText(varList: Union[List[dict], List]) -> str:
     if (varList != None and len(varList)):
         varTextList = []
         for var in varList:
-            varTextList.append(var['varName']+': '+var['value'])
+            varTextList.append(var['varName']+': '+var['value'] if var['varName'] != var['value'] else var['varName'])
         varText = ', '.join(varTextList)
     return varText
 
