@@ -18,7 +18,10 @@ and edit .env file.
 
 Not necessary: registration in https://cloud.ibm.com/, get API key and URL.
 
-# Use
+# Run / Use
 ```
 > python ./t.py
 ```
+
+## Exampel
+(https://i.ibb.co/k47w4Cv/Video-2021-08-03-125045.gif)
