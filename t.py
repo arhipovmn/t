@@ -248,7 +248,7 @@ def translite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: 
         varText = getVarText(checkVar(tEn))
         print('', end='\n')
         print(Fore.MAGENTA +
-              'Для построения дерева ключей можно использовать символ "." (например: '+moduleName+'.popupX)', end='\n')
+              'Для построения дерева ключей можно использовать символ "."\nНапример при вводе: error.getData - итоговое выражение для перевода будет таким: t(\''+moduleName+'.error.getData\', { ... })\nИмя модуля ('+moduleName+') добавляется автоматически.\nA файл с переводом будет добавлено:\n\nerror: {\n   getData: \''+tRu+'\',\n},', end='\n\n')
         # print('Предлагаем следующий ключ: ....................', end='\n')
         tKey = input('Напишите ключ для "'+tRu+'" = "'+tEn+'": ')
         if tKey == '':
@@ -335,10 +335,10 @@ def markNoTranslite(file: os.DirEntry, lines: List[str], numLine: int, textExclu
             f.close()
     else:
         repeat = input(
-                'Перейти снова к выбору действий для данной строки? (y/n): ')
+            'Перейти снова к выбору действий для данной строки? (y/n): ')
         if (repeat == 'Y' or repeat == 'y'):
             selectAction(file, lines, numLine,
-                            textExclusion, textInclusion)
+                         textExclusion, textInclusion)
         else:
             print('', end='\n\n')
 
@@ -355,7 +355,8 @@ def selectKeyTranslite(file: os.DirEntry, lines: List[str], numLine: int, textEx
     """
     print('', end='\n')
     print('Чем заменить строку "'+textExclusion+'"? ', end='\n')
-    replaceText = input('Укажите ключ, типа: t(\'ключ\', { ... }): ')
+    replaceText = input(
+        'Укажите ключ, типа: t(\''+moduleName+'.ключ\', { ... }): ')
     print('', end='\n')
     addCurlyBraces = input('Добавить фигурные скобки? (y/n): ')
     if (addCurlyBraces == 'Y' or addCurlyBraces == 'y'):
