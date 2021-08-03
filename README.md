@@ -20,6 +20,7 @@ Not necessary: registration in https://cloud.ibm.com/, get API key and URL.
 
 # Run / Use
 ```
+> ./t/Scripts/activate  
 > python ./t.py
 ```
 
