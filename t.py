@@ -211,7 +211,7 @@ def checkVar(t: str, inputEnable: bool = True) -> Union[List[dict], List]:
     return []
 
 
-def translite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: str, textInclusion: str) -> None:
+def translite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: str, textReplace: str) -> None:
     """Указываем English / Russina версии переводов и всякие проверки
 
     Args:
@@ -219,7 +219,7 @@ def translite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: 
         lines (List[str]): все строки в файле
         numLine (int): номер строки в файле, который парсим
         textExclusion (str): текст в строке который был ранее распарсен
-        textInclusion (str): регулярное выражение для замены
+        textReplace (str): регулярное выражение для замены
 
     Raises:
         EmptyValue: вызываем если было указано пустое значение
@@ -262,7 +262,7 @@ def translite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: 
         else:
             replaceText = 't(\''+moduleName+'.'+tKey+'\'' + \
                 ('' if varText == '' else ', { '+varText+' }')+')'
-        replaceLine = lines[numLine].replace(textInclusion, replaceText, 1)
+        replaceLine = lines[numLine].replace(textReplace, replaceText, 1)
         print('', end='\n')
         print(Fore.MAGENTA+'Новая строка:')
         print(str(numLine+1)+': '+replaceLine, end='\n\n')
@@ -280,39 +280,39 @@ def translite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: 
         else:
             repeat = input('Повторить перевод? (y/n): ')
             if (repeat == 'Y' or repeat == 'y'):
-                translite(file, lines, numLine, textExclusion, textInclusion)
+                translite(file, lines, numLine, textExclusion, textReplace)
             else:
                 repeat = input(
                     'Перейти снова к выбору действий для данной строки? (y/n): ')
                 if (repeat == 'Y' or repeat == 'y'):
                     selectAction(file, lines, numLine,
-                                 textExclusion, textInclusion)
+                                 textExclusion, textReplace)
                 else:
                     print('', end='\n\n')
     except DifferentCountVariables:
         print(Fore.RED+'Ошибка! Разное количество переменных в English / Russian версиях, повторите перевод', end='\n')
-        translite(file, lines, numLine, textExclusion, textInclusion)
+        translite(file, lines, numLine, textExclusion, textReplace)
     except DifferentVariables:
         print(Fore.RED+'Ошибка! Разные переменные в English / Russian версиях, повторите перевод', end='\n')
-        translite(file, lines, numLine, textExclusion, textInclusion)
+        translite(file, lines, numLine, textExclusion, textReplace)
     except EmptyValue:
         print(Fore.RED+'Ошибка! Значение не может быть пустым, повторите перевод', end='\n')
-        translite(file, lines, numLine, textExclusion, textInclusion)
+        translite(file, lines, numLine, textExclusion, textReplace)
     except EmptyValueKey as e:
         print(Fore.RED+'Один из ключей: '+e.tKey +
               ' - пуст. Ключ не может быть пустым! Повторите перевод', end='\n')
-        translite(file, lines, numLine, textExclusion, textInclusion)
+        translite(file, lines, numLine, textExclusion, textReplace)
     except ForbiddenRewriting as e:
         print(Fore.RED+'Ошибка! В указанный ключ: '+e.key +
               ' ('+e.tKey+') уже что-то было записано.', end='\n')
         print(Fore.RED+'Повторите перевод, укажите другой ключ...', end='\n')
-        translite(file, lines, numLine, textExclusion, textInclusion)
+        translite(file, lines, numLine, textExclusion, textReplace)
     except Exception:
         print(Fore.RED+'Хм, какая-то не предвиденная ошибка =/ ... попробуйте перевести повторно', end='\n')
-        translite(file, lines, numLine, textExclusion, textInclusion)
+        translite(file, lines, numLine, textExclusion, textReplace)
 
 
-def markNoTranslite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: str, textInclusion: str) -> None:
+def markNoTranslite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: str, textReplace: str) -> None:
     """Отмечаем строку как не переведенной
 
     Args:
@@ -320,7 +320,7 @@ def markNoTranslite(file: os.DirEntry, lines: List[str], numLine: int, textExclu
         lines (List[str]): все строки в файле
         numLine (int): номер строки в файле, который парсим
         textExclusion (str): текст в строке который был ранее распарсен
-        textInclusion (str): регулярное выражение для замены
+        textReplace (str): регулярное выражение для замены
     """
     replaceLine = re.sub(
         r'(.*)\n$', r'\1 // НЕ ПЕРЕВЕДЕННО !!!\n', lines[numLine], flags=re.IGNORECASE)
@@ -338,12 +338,12 @@ def markNoTranslite(file: os.DirEntry, lines: List[str], numLine: int, textExclu
             'Перейти снова к выбору действий для данной строки? (y/n): ')
         if (repeat == 'Y' or repeat == 'y'):
             selectAction(file, lines, numLine,
-                         textExclusion, textInclusion)
+                         textExclusion, textReplace)
         else:
             print('', end='\n\n')
 
 
-def selectKeyTranslite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: str, textInclusion: str) -> None:
+def selectKeyTranslite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: str, textReplace: str) -> None:
     """Указываем существующий перивод
 
     Args:
@@ -351,7 +351,7 @@ def selectKeyTranslite(file: os.DirEntry, lines: List[str], numLine: int, textEx
         lines (List[str]): все строки в файле
         numLine (int): номер строки в файле, который парсим
         textExclusion (str): текст в строке который был ранее распарсен
-        textInclusion (str): регулярное выражение для замены
+        textReplace (str): регулярное выражение для замены
     """
     print('', end='\n')
     print('Чем заменить строку "'+textExclusion+'"? ', end='\n')
@@ -361,7 +361,7 @@ def selectKeyTranslite(file: os.DirEntry, lines: List[str], numLine: int, textEx
     addCurlyBraces = input('Добавить фигурные скобки? (y/n): ')
     if (addCurlyBraces == 'Y' or addCurlyBraces == 'y'):
         replaceText = '{'+replaceText+'}'
-    replaceLine = lines[numLine].replace(textInclusion, replaceText, 1)
+    replaceLine = lines[numLine].replace(textReplace, replaceText, 1)
     print('', end='\n')
     print(Fore.MAGENTA+'Новая строка:')
     print(str(numLine+1)+': '+replaceLine, end='\n\n')
@@ -374,18 +374,18 @@ def selectKeyTranslite(file: os.DirEntry, lines: List[str], numLine: int, textEx
     else:
         repeat = input('Повторить перевод? (y/n): ')
         if (repeat == 'Y' or repeat == 'y'):
-            translite(file, lines, numLine, textExclusion, textInclusion)
+            translite(file, lines, numLine, textExclusion, textReplace)
         else:
             repeat = input(
                 'Перейти снова к выбору действий для данной строки? (y/n): ')
             if (repeat == 'Y' or repeat == 'y'):
                 selectAction(file, lines, numLine,
-                             textExclusion, textInclusion)
+                             textExclusion, textReplace)
             else:
                 print('', end='\n\n')
 
 
-def selectAction(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: str, textInclusion: str) -> None:
+def selectAction(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: str, textReplace: str) -> None:
     """Выбор действия по найденой строке
 
     Args:
@@ -393,7 +393,7 @@ def selectAction(file: os.DirEntry, lines: List[str], numLine: int, textExclusio
         lines (List[str]): все строки в файле
         numLine (int): номер строки в файле, который парсим
         textExclusion (str): текст в строке который был ранее распарсен
-        textInclusion (str): регулярное выражение для замены
+        textReplace (str): регулярное выражение для замены
     """
     print('Выберите опцию:')
     print('1 - игнорировать;')
@@ -407,15 +407,15 @@ def selectAction(file: os.DirEntry, lines: List[str], numLine: int, textExclusio
         print(Fore.MAGENTA+' ... переводим:', end='\n')
         print(Fore.MAGENTA +
               'В переводе можно указать переменные, например: {{yourVarName}}', end='\n')
-        translite(file, lines, numLine, textExclusion, textInclusion)
+        translite(file, lines, numLine, textExclusion, textReplace)
     elif (select == '3'):
         print(Fore.MAGENTA+' ... отмечено как не переведенно', end='\n')
-        markNoTranslite(file, lines, numLine, textExclusion, textInclusion)
+        markNoTranslite(file, lines, numLine, textExclusion, textReplace)
     elif (select == '4'):
         print(Fore.MAGENTA+' ... используем существующий перевод', end='\n')
-        selectKeyTranslite(file, lines, numLine, textExclusion, textInclusion)
+        selectKeyTranslite(file, lines, numLine, textExclusion, textReplace)
     else:
-        selectAction(file, lines, numLine, textExclusion, textInclusion)
+        selectAction(file, lines, numLine, textExclusion, textReplace)
 
 
 def parseFile(file: os.DirEntry) -> None:
@@ -448,21 +448,25 @@ def parseFile(file: os.DirEntry) -> None:
                         'searchRegexInclusion': '(`[^`]*[а-я]+[^`]*`)',
                         'searchRegexExclusion': r'(?:`)+([^`]*[а-я]+[^`]*)(?:`)+',
                         'comment': 'Обнаружено полное соответствие шаблону (`) в строке ('+str(numLine+1)+'):',
+                        'inclusion': True,
                     },
                     {
                         'searchRegexInclusion': '(\'[^\']*[а-я]+[^\']*\')',
                         'searchRegexExclusion': r'(?:\')+([^\']*[а-я]+[^\']*)(?:\')+',
                         'comment': 'Обнаружено полное соответствие шаблону (\') в строке ('+str(numLine+1)+'):',
+                        'inclusion': True,
                     },
                     {
                         'searchRegexInclusion': '("[^"]*[а-я]+[^"]*")',
                         'searchRegexExclusion': r'(?:")+([^"]*[а-я]+[^"]*)(?:")+',
                         'comment': 'Обнаружено полное соответствие шаблону (") в строке ('+str(numLine+1)+'):',
+                        'inclusion': True,
                     },
                     {
                         'searchRegexInclusion': '(>[^>]*[а-я]+[^<]*<)',
                         'searchRegexExclusion': r'(?:>)+([^>]*[а-я]+[^<]*)(?:<)+',
                         'comment': 'Обнаружено полное соответствие шаблону (><) в строке ('+str(numLine+1)+'):',
+                        'inclusion': False,
                     },
                 ]
                 textInclusion = None
@@ -477,8 +481,9 @@ def parseFile(file: os.DirEntry) -> None:
                                 regex['searchRegexExclusion'], r'\1', textInclusion, flags=re.IGNORECASE)
                             print(Fore.MAGENTA+'Найдено:')
                             print(textExclusion, end='\n\n')
+                            textReplace = textInclusion if regex['inclusion'] == True else textExclusion
                             selectAction(file, lines, numLine,
-                                         textExclusion, textInclusion)
+                                         textExclusion, textReplace)
 
                 # если комментарий (после попытки обнаружения кириллицы в кавычках в этой же строке) выходим...
                 if (re.search('(?:\/\/)+.*[а-я]+.*', line, flags=re.IGNORECASE)):
