@@ -347,6 +347,47 @@ def markNoTranslite(file: os.DirEntry, lines: List[str], numLine: int, textExclu
                 print('', end='\n\n')
 
 
+def selectKeyTranslite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: str, textInclusion: str) -> None:
+    """Указываем существующий перивод
+
+    Args:
+        file (os.DirEntry): файл, который парсим (его будем изменять)
+        lines (List[str]): все строки в файле
+        numLine (int): номер строки в файле, который парсим
+        textExclusion (str): текст в строке который был ранее распарсен
+        textInclusion (str): регулярное выражение для замены
+    """
+    print('', end='\n')
+    print('Чем заменить строку "'+textExclusion+'"? ', end='\n')
+    replaceText = input('Укажите ключ, типа: t(\'ключ\', { ... }): ')
+    print('', end='\n')
+    addCurlyBraces = input('Добавить фигурные скобки? (y/n): ')
+    if (addCurlyBraces == 'Y' or addCurlyBraces == 'y'):
+        replaceText = '{'+replaceText+'}'
+    replaceLine = lines[numLine].replace(textInclusion, replaceText, 1)
+    print('', end='\n')
+    print(Fore.MAGENTA+'Новая строка:')
+    print(str(numLine+1)+': '+replaceLine, end='\n\n')
+    save = input('Сохраняем? (y/n): ')
+    if (save == 'Y' or save == 'y'):
+        with open(file, 'w', encoding='utf-8') as f:
+            lines[numLine] = replaceLine
+            f.writelines(lines)
+            f.close()
+    else:
+        repeat = input('Повторить перевод? (y/n): ')
+        if (repeat == 'Y' or repeat == 'y'):
+            translite(file, lines, numLine, textExclusion, textInclusion)
+        else:
+            repeat = input(
+                'Перейти снова к выбору действий для данной строки? (y/n): ')
+            if (repeat == 'Y' or repeat == 'y'):
+                selectAction(file, lines, numLine,
+                             textExclusion, textInclusion)
+            else:
+                print('', end='\n\n')
+
+
 def selectAction(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: str, textInclusion: str) -> None:
     """Выбор действия по найденой строке
 
@@ -361,6 +402,7 @@ def selectAction(file: os.DirEntry, lines: List[str], numLine: int, textExclusio
     print('1 - игнорировать;')
     print('2 - перевести;')
     print('3 - отметить как непереведенное;', end='\n')
+    print('4 - использовать существующий перевод;', end='\n')
     select = input(': ')
     if (select == '1'):
         print(Fore.MAGENTA+' ... игнорировано', end='\n')
@@ -372,6 +414,9 @@ def selectAction(file: os.DirEntry, lines: List[str], numLine: int, textExclusio
     elif (select == '3'):
         print(Fore.MAGENTA+' ... отмечено как не переведенно', end='\n')
         markNoTranslite(file, lines, numLine, textExclusion, textInclusion)
+    elif (select == '4'):
+        print(Fore.MAGENTA+' ... используем существующий перевод', end='\n')
+        selectKeyTranslite(file, lines, numLine, textExclusion, textInclusion)
     else:
         selectAction(file, lines, numLine, textExclusion, textInclusion)
 
