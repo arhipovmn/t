@@ -355,9 +355,18 @@ def selectKeyTranslite(file: os.DirEntry, lines: List[str], numLine: int, textEx
         textReplace (str): регулярное выражение для замены
     """
     print('', end='\n')
-    print('Чем заменить строку "'+textExclusion+'"? ', end='\n')
-    replaceText = input(
-        'Укажите ключ, типа: t(\''+moduleName+'.ключ\', { ... }): ')
+    print('Чем заменить строку "'+textExclusion+'"? ')
+    print('Выберите опцию:')
+    print('1 - использовать существующий ключ;')
+    print('2 - использовать выражение типа: t(\'' +
+          moduleName+'.ключ\', { ... }):;')
+    select = input(': ')
+    if select == '1':
+        replaceText = input('Укажите ключ: ')
+        replaceText = 't(\''+replaceText+'\')'
+    elif select == '2':
+        replaceText = input(
+            'Укажите ключ, типа: t(\''+moduleName+'.ключ\', { ... }): ')
     print('', end='\n')
     addCurlyBraces = input('Добавить фигурные скобки? (y/n): ')
     if (addCurlyBraces == 'Y' or addCurlyBraces == 'y'):
@@ -398,17 +407,17 @@ def selectAction(file: os.DirEntry, lines: List[str], numLine: int, textExclusio
     print('3 - отметить как непереведенное;', end='\n')
     print('4 - использовать существующий перевод;', end='\n')
     select = input(': ')
-    if (select == '1'):
+    if select == '1':
         print(Fore.MAGENTA+' ... игнорировано', end='\n')
-    elif (select == '2'):
+    elif select == '2':
         print(Fore.MAGENTA+' ... переводим:', end='\n')
         print(Fore.MAGENTA +
               'В переводе можно указать переменные, например: {{yourVarName}}', end='\n')
         translite(file, lines, numLine, textExclusion, textReplace)
-    elif (select == '3'):
+    elif select == '3':
         print(Fore.MAGENTA+' ... отмечено как не переведенно', end='\n')
         markNoTranslite(file, lines, numLine, textExclusion, textReplace)
-    elif (select == '4'):
+    elif select == '4':
         print(Fore.MAGENTA+' ... используем существующий перевод', end='\n')
         selectKeyTranslite(file, lines, numLine, textExclusion, textReplace)
     else:
