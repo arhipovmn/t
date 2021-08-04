@@ -57,6 +57,9 @@ class ForbiddenRewriting(Exception):
         self.key = key
         self.tKey = tKey
 
+class NoSelect(Exception):
+    """Исключение если не выбрана никакая опция"""
+    pass
 
 resources = {}
 resourcesFileName = 'resources_'+str(randint(1, 999999))+'.txt'
@@ -363,36 +366,41 @@ def selectKeyTranslite(file: os.DirEntry, lines: List[str], numLine: int, textEx
     print('2 - использовать выражение типа: t(\'' +
           moduleName+'.ключ\', { ... }):;')
     select = input(': ')
-    if select == '1':
-        replaceText = input('Укажите ключ: ')
-        replaceText = 't(\''+replaceText+'\')'
-    elif select == '2':
-        replaceText = input(
-            'Укажите ключ, типа: t(\''+moduleName+'.ключ\', { ... }): ')
-    print('', end='\n')
-    addCurlyBraces = input('Добавить фигурные скобки? (y/n): ')
-    if (addCurlyBraces == 'Y' or addCurlyBraces == 'y'):
-        replaceText = '{'+replaceText+'}'
-    replaceLine = lines[numLine].replace(textReplace, replaceText, 1)
-    print('', end='\n')
-    print(Fore.MAGENTA+'Новая строка:')
-    print(str(numLine+1)+': '+replaceLine, end='\n\n')
-    save = input('Сохраняем? (y/n): ')
-    if (save == 'Y' or save == 'y'):
-        with open(file, 'w', encoding='utf-8') as f:
-            lines[numLine] = replaceLine
-            f.writelines(lines)
-            f.close()
-            timestr = datetime.now().strftime('%H:%M:%S')
-            print(Fore.GREEN+timestr+' Сохранено!', end='\n\n')
-    else:
-        repeat = input(
-            'Перейти снова к выбору действий для данной строки? (y/n): ')
-        if (repeat == 'Y' or repeat == 'y'):
-            selectAction(file, lines, numLine,
-                         textExclusion, textReplace)
+    try:
+        if select == '1':
+            replaceText = input('Укажите ключ: ')
+            replaceText = 't(\''+replaceText+'\')'
+        elif select == '2':
+            replaceText = input(
+                'Укажите ключ, типа: t(\''+moduleName+'.ключ\', { ... }): ')
         else:
-            print('', end='\n\n')
+            raise NoSelect
+        print('', end='\n')
+        addCurlyBraces = input('Добавить фигурные скобки? (y/n): ')
+        if (addCurlyBraces == 'Y' or addCurlyBraces == 'y'):
+            replaceText = '{'+replaceText+'}'
+        replaceLine = lines[numLine].replace(textReplace, replaceText, 1)
+        print('', end='\n')
+        print(Fore.MAGENTA+'Новая строка:')
+        print(str(numLine+1)+': '+replaceLine, end='\n\n')
+        save = input('Сохраняем? (y/n): ')
+        if (save == 'Y' or save == 'y'):
+            with open(file, 'w', encoding='utf-8') as f:
+                lines[numLine] = replaceLine
+                f.writelines(lines)
+                f.close()
+                timestr = datetime.now().strftime('%H:%M:%S')
+                print(Fore.GREEN+timestr+' Сохранено!', end='\n\n')
+        else:
+            repeat = input(
+                'Перейти снова к выбору действий для данной строки? (y/n): ')
+            if (repeat == 'Y' or repeat == 'y'):
+                selectAction(file, lines, numLine,
+                            textExclusion, textReplace)
+            else:
+                print('', end='\n\n')
+    except NoSelect:
+        selectKeyTranslite(file, lines, numLine, textExclusion, textReplace)
 
 
 def selectAction(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: str, textReplace: str) -> None:
