@@ -334,6 +334,8 @@ def markNoTranslite(file: os.DirEntry, lines: List[str], numLine: int, textExclu
             lines[numLine] = replaceLine
             f.writelines(lines)
             f.close()
+            timestr = datetime.now().strftime('%H:%M:%S')
+            print(Fore.GREEN+timestr+' Сохранено!', end='\n\n')
     else:
         repeat = input(
             'Перейти снова к выбору действий для данной строки? (y/n): ')
@@ -381,6 +383,8 @@ def selectKeyTranslite(file: os.DirEntry, lines: List[str], numLine: int, textEx
             lines[numLine] = replaceLine
             f.writelines(lines)
             f.close()
+            timestr = datetime.now().strftime('%H:%M:%S')
+            print(Fore.GREEN+timestr+' Сохранено!', end='\n\n')
     else:
         repeat = input(
             'Перейти снова к выбору действий для данной строки? (y/n): ')
