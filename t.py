@@ -57,9 +57,11 @@ class ForbiddenRewriting(Exception):
         self.key = key
         self.tKey = tKey
 
+
 class NoSelect(Exception):
     """Исключение если не выбрана никакая опция"""
     pass
+
 
 resources = {}
 resourcesFileName = 'resources_'+str(randint(1, 999999))+'.txt'
@@ -258,14 +260,26 @@ def translite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: 
         if tKey == '':
             raise EmptyValue
         checkTKey(tKey)
+        replaceTextY = '{t(\''+moduleName+'.'+tKey+'\'' + \
+            ('' if varText == '' else ', { '+varText+' }')+')}'
+        replaceTextN = 't(\''+moduleName+'.'+tKey+'\'' + \
+            ('' if varText == '' else ', { '+varText+' }')+')'
         print('', end='\n')
-        addCurlyBraces = input('Добавить фигурные скобки? (y/n): ')
+        print('Добавить фигурные скобки?', end='\n')
+        print('', end='\n')
+        print('Если добавить (y):', end='\n')
+        print(str(numLine+1)+': ' +
+              lines[numLine].replace(textReplace, replaceTextY, 1))
+        print('', end='\n')
+        print('Если не добавить (n):', end='\n')
+        print(str(numLine+1)+': ' +
+              lines[numLine].replace(textReplace, replaceTextN, 1))
+        print('', end='\n')
+        addCurlyBraces = input('(y/n): ')
         if (addCurlyBraces == 'Y' or addCurlyBraces == 'y'):
-            replaceText = '{t(\''+moduleName+'.'+tKey+'\'' + \
-                ('' if varText == '' else ', { '+varText+' }')+')}'
+            replaceText = replaceTextY
         else:
-            replaceText = 't(\''+moduleName+'.'+tKey+'\'' + \
-                ('' if varText == '' else ', { '+varText+' }')+')'
+            replaceText = replaceTextN
         replaceLine = lines[numLine].replace(textReplace, replaceText, 1)
         print('', end='\n')
         print(Fore.MAGENTA+'Новая строка:')
@@ -377,7 +391,7 @@ def selectKeyTranslite(file: os.DirEntry, lines: List[str], numLine: int, textEx
                 'Укажите ключ, типа: t(\''+moduleName+'.ключ\', { ... }): ')
         elif select == '3':
             selectAction(file, lines, numLine,
-                            textExclusion, textReplace)
+                         textExclusion, textReplace)
         else:
             raise NoSelect
         if replaceText != None:
@@ -402,7 +416,7 @@ def selectKeyTranslite(file: os.DirEntry, lines: List[str], numLine: int, textEx
                     'Перейти снова к выбору действий для данной строки? (y/n): ')
                 if (repeat == 'Y' or repeat == 'y'):
                     selectAction(file, lines, numLine,
-                                textExclusion, textReplace)
+                                 textExclusion, textReplace)
                 else:
                     print('', end='\n\n')
     except NoSelect:
