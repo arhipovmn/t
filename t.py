@@ -465,6 +465,9 @@ def parseFile(file: os.DirEntry) -> None:
             # если комментарий выходим...
             if (re.search('^[\s\t]*\*', line, flags=re.IGNORECASE)):
                 continue
+            # если комментарий, который сделан в процессе работы этого скрипта - выходим...
+            if (re.search('//\sНЕ\sПЕРЕВЕДЕННО\s!!!', line, flags=re.IGNORECASE)):
+                continue
 
             if (re.search('[а-я]+', line, flags=re.IGNORECASE)):  # если кириллица
                 listRegex = [
@@ -509,10 +512,10 @@ def parseFile(file: os.DirEntry) -> None:
                             selectAction(file, lines, numLine,
                                          textExclusion, textReplace)
 
-                # если комментарий (после попытки обнаружения кириллицы в кавычках в этой же строке) выходим...
+                # если комментарий (после попытки обнаружения кириллицы по шаблонам в этой же строке) выходим...
                 if (re.search('(?:\/\/)+.*[а-я]+.*', line, flags=re.IGNORECASE)):
                     continue
-                # если комментарий (после попытки обнаружения кириллицы в кавычках в этой же строке) выходим...
+                # если комментарий (после попытки обнаружения кириллицы по шаблонам в этой же строке) выходим...
                 elif (re.search('(?:\/\*)+.*[а-я]+.*', line, flags=re.IGNORECASE)):
                     continue
                 else:
