@@ -282,8 +282,15 @@ def translite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: 
             replaceText = replaceTextN
         replaceLine = lines[numLine].replace(textReplace, replaceText, 1)
         print('', end='\n')
-        print(Fore.MAGENTA+'Новая строка:')
-        print(str(numLine+1)+': '+replaceLine, end='\n\n')
+        print(Fore.MAGENTA+'Новая строка ('+str(numLine+1)+'):', end='\n')
+        if (numLine-3) >= 0: print(str(numLine-2)+': '+lines[numLine-3], end='')
+        if (numLine-2) >= 0: print(str(numLine-1)+': '+lines[numLine-2], end='')
+        if (numLine-1) >= 0: print(str(numLine-0)+': '+lines[numLine-1], end='')
+        print(Fore.GREEN+str(numLine+1)+': '+replaceLine, end='')
+        if (numLine+1) <= len(lines): print(str(numLine+2)+': '+lines[numLine+1], end='')
+        if (numLine+2) <= len(lines): print(str(numLine+3)+': '+lines[numLine+2], end='')
+        if (numLine+3) <= len(lines): print(str(numLine+4)+': '+lines[numLine+3], end='')
+        print('', end='\n\n')
         save = input('Сохраняем? (y/n): ')
         if (save == 'Y' or save == 'y'):
             addResources(tEn, tKey, 'EN')
@@ -343,8 +350,15 @@ def markNoTranslite(file: os.DirEntry, lines: List[str], numLine: int, textExclu
     replaceLine = re.sub(
         r'(.*)\n$', r'\1 // НЕ ПЕРЕВЕДЕННО !!!\n', lines[numLine], flags=re.IGNORECASE)
     print('', end='\n')
-    print(Fore.MAGENTA+'Новая строка:')
-    print(str(numLine+1)+': '+replaceLine, end='\n\n')
+    print(Fore.MAGENTA+'Новая строка ('+str(numLine+1)+'):', end='\n')
+    if (numLine-3) >= 0: print(str(numLine-2)+': '+lines[numLine-3], end='')
+    if (numLine-2) >= 0: print(str(numLine-1)+': '+lines[numLine-2], end='')
+    if (numLine-1) >= 0: print(str(numLine-0)+': '+lines[numLine-1], end='')
+    print(Fore.GREEN+str(numLine+1)+': '+replaceLine, end='')
+    if (numLine+1) <= len(lines): print(str(numLine+2)+': '+lines[numLine+1], end='')
+    if (numLine+2) <= len(lines): print(str(numLine+3)+': '+lines[numLine+2], end='')
+    if (numLine+3) <= len(lines): print(str(numLine+4)+': '+lines[numLine+3], end='')
+    print('', end='\n\n')
     save = input('Сохраняем? (y/n): ')
     if (save == 'Y' or save == 'y'):
         with open(file, 'w', encoding='utf-8') as f:
@@ -415,8 +429,15 @@ def selectKeyTranslite(file: os.DirEntry, lines: List[str], numLine: int, textEx
                 replaceText = replaceTextN
             replaceLine = lines[numLine].replace(textReplace, replaceText, 1)
             print('', end='\n')
-            print(Fore.MAGENTA+'Новая строка:')
-            print(str(numLine+1)+': '+replaceLine, end='\n\n')
+            print(Fore.MAGENTA+'Новая строка ('+str(numLine+1)+'):', end='\n')
+            if (numLine-3) >= 0: print(str(numLine-2)+': '+lines[numLine-3], end='')
+            if (numLine-2) >= 0: print(str(numLine-1)+': '+lines[numLine-2], end='')
+            if (numLine-1) >= 0: print(str(numLine-0)+': '+lines[numLine-1], end='')
+            print(Fore.GREEN+str(numLine+1)+': '+replaceLine, end='')
+            if (numLine+1) <= len(lines): print(str(numLine+2)+': '+lines[numLine+1], end='')
+            if (numLine+2) <= len(lines): print(str(numLine+3)+': '+lines[numLine+2], end='')
+            if (numLine+3) <= len(lines): print(str(numLine+4)+': '+lines[numLine+3], end='')
+            print('', end='\n\n')
             save = input('Сохраняем? (y/n): ')
             if (save == 'Y' or save == 'y'):
                 with open(file, 'w', encoding='utf-8') as f:
