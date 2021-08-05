@@ -392,7 +392,7 @@ def selectKeyTranslite(file: os.DirEntry, lines: List[str], numLine: int, textEx
     print('Выберите опцию:')
     print('1 - использовать существующий ключ;')
     print('2 - использовать выражение типа: t(\'' +
-          moduleName+'.ключ\', { ... }):;')
+          moduleName+'.ключ\', { ... }):')
     print('3 - вернутся назад;')
     select = input(': ')
     try:
