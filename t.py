@@ -267,11 +267,11 @@ def translite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: 
         print('', end='\n')
         print('Добавить фигурные скобки?', end='\n')
         print('', end='\n')
-        print('Если добавить (y):', end='\n')
+        print('Если да (y):', end='\n')
         print(str(numLine+1)+': ' +
               lines[numLine].replace(textReplace, replaceTextY, 1))
         print('', end='\n')
-        print('Если не добавить (n):', end='\n')
+        print('Если нет (n):', end='\n')
         print(str(numLine+1)+': ' +
               lines[numLine].replace(textReplace, replaceTextN, 1))
         print('', end='\n')
@@ -395,10 +395,24 @@ def selectKeyTranslite(file: os.DirEntry, lines: List[str], numLine: int, textEx
         else:
             raise NoSelect
         if replaceText != None:
+            replaceTextY = '{'+replaceText+'}'
+            replaceTextN = replaceText
             print('', end='\n')
-            addCurlyBraces = input('Добавить фигурные скобки? (y/n): ')
+            print('Добавить фигурные скобки?', end='\n')
+            print('', end='\n')
+            print('Если да (y):', end='\n')
+            print(str(numLine+1)+': ' +
+                lines[numLine].replace(textReplace, replaceTextY, 1))
+            print('', end='\n')
+            print('Если нет (n):', end='\n')
+            print(str(numLine+1)+': ' +
+                lines[numLine].replace(textReplace, replaceTextN, 1))
+            print('', end='\n')
+            addCurlyBraces = input('(y/n): ')
             if (addCurlyBraces == 'Y' or addCurlyBraces == 'y'):
-                replaceText = '{'+replaceText+'}'
+                replaceText = replaceTextY
+            else:
+                replaceText = replaceTextN
             replaceLine = lines[numLine].replace(textReplace, replaceText, 1)
             print('', end='\n')
             print(Fore.MAGENTA+'Новая строка:')
