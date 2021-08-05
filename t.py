@@ -287,9 +287,9 @@ def translite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: 
         if (numLine-2) >= 0: print(str(numLine-1)+': '+lines[numLine-2], end='')
         if (numLine-1) >= 0: print(str(numLine-0)+': '+lines[numLine-1], end='')
         print(Fore.GREEN+str(numLine+1)+': '+replaceLine, end='')
-        if (numLine+1) <= len(lines): print(str(numLine+2)+': '+lines[numLine+1], end='')
-        if (numLine+2) <= len(lines): print(str(numLine+3)+': '+lines[numLine+2], end='')
-        if (numLine+3) <= len(lines): print(str(numLine+4)+': '+lines[numLine+3], end='')
+        if (numLine+1) <= (len(lines)-1): print(str(numLine+2)+': '+lines[numLine+1], end='')
+        if (numLine+2) <= (len(lines)-1): print(str(numLine+3)+': '+lines[numLine+2], end='')
+        if (numLine+3) <= (len(lines)-1): print(str(numLine+4)+': '+lines[numLine+3], end='')
         print('', end='\n\n')
         save = input('Сохраняем? (y/n): ')
         if (save == 'Y' or save == 'y'):
@@ -355,9 +355,9 @@ def markNoTranslite(file: os.DirEntry, lines: List[str], numLine: int, textExclu
     if (numLine-2) >= 0: print(str(numLine-1)+': '+lines[numLine-2], end='')
     if (numLine-1) >= 0: print(str(numLine-0)+': '+lines[numLine-1], end='')
     print(Fore.GREEN+str(numLine+1)+': '+replaceLine, end='')
-    if (numLine+1) <= len(lines): print(str(numLine+2)+': '+lines[numLine+1], end='')
-    if (numLine+2) <= len(lines): print(str(numLine+3)+': '+lines[numLine+2], end='')
-    if (numLine+3) <= len(lines): print(str(numLine+4)+': '+lines[numLine+3], end='')
+    if (numLine+1) <= (len(lines)-1): print(str(numLine+2)+': '+lines[numLine+1], end='')
+    if (numLine+2) <= (len(lines)-1): print(str(numLine+3)+': '+lines[numLine+2], end='')
+    if (numLine+3) <= (len(lines)-1): print(str(numLine+4)+': '+lines[numLine+3], end='')
     print('', end='\n\n')
     save = input('Сохраняем? (y/n): ')
     if (save == 'Y' or save == 'y'):
@@ -434,9 +434,9 @@ def selectKeyTranslite(file: os.DirEntry, lines: List[str], numLine: int, textEx
             if (numLine-2) >= 0: print(str(numLine-1)+': '+lines[numLine-2], end='')
             if (numLine-1) >= 0: print(str(numLine-0)+': '+lines[numLine-1], end='')
             print(Fore.GREEN+str(numLine+1)+': '+replaceLine, end='')
-            if (numLine+1) <= len(lines): print(str(numLine+2)+': '+lines[numLine+1], end='')
-            if (numLine+2) <= len(lines): print(str(numLine+3)+': '+lines[numLine+2], end='')
-            if (numLine+3) <= len(lines): print(str(numLine+4)+': '+lines[numLine+3], end='')
+            if (numLine+1) <= (len(lines)-1): print(str(numLine+2)+': '+lines[numLine+1], end='')
+            if (numLine+2) <= (len(lines)-1): print(str(numLine+3)+': '+lines[numLine+2], end='')
+            if (numLine+3) <= (len(lines)-1): print(str(numLine+4)+': '+lines[numLine+3], end='')
             print('', end='\n\n')
             save = input('Сохраняем? (y/n): ')
             if (save == 'Y' or save == 'y'):
@@ -555,9 +555,9 @@ def parseFile(file: os.DirEntry) -> None:
                         if (numLine-2) >= 0: print(str(numLine-1)+': '+lines[numLine-2], end='')
                         if (numLine-1) >= 0: print(str(numLine-0)+': '+lines[numLine-1], end='')
                         print(Fore.GREEN+str(numLine+1)+': '+line, end='') # <<< найденная строка тут
-                        if (numLine+1) <= len(lines): print(str(numLine+2)+': '+lines[numLine+1], end='')
-                        if (numLine+2) <= len(lines): print(str(numLine+3)+': '+lines[numLine+2], end='')
-                        if (numLine+3) <= len(lines): print(str(numLine+4)+': '+lines[numLine+3], end='')
+                        if (numLine+1) <= (len(lines)-1): print(str(numLine+2)+': '+lines[numLine+1], end='')
+                        if (numLine+2) <= (len(lines)-1): print(str(numLine+3)+': '+lines[numLine+2], end='')
+                        if (numLine+3) <= (len(lines)-1): print(str(numLine+4)+': '+lines[numLine+3], end='')
                         for textInclusion in re.findall(regex['searchRegexInclusion'], line, flags=re.IGNORECASE):
                             textExclusion = re.sub(
                                 regex['searchRegexExclusion'], r'\1', textInclusion, flags=re.IGNORECASE)
