@@ -257,7 +257,7 @@ def translite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: 
         print('Предлагаем English вариант для "' +
               textExclusion+'": '+('нет перевода ...' if translation == '' else translation), end='\n')
         print('', end='\n')
-        print(Fore.MAGENTA+'Оставьте поле пустым, чтобы принять вариант по умолчанию (предложенный)', end='\n')
+        print(Fore.MAGENTA+'Оставьте поле пустым, чтобы принять вариант предложенный вариант', end='\n')
         tEn = input('Напишите English вариант для "'+textExclusion+'": ')
         if tEn == '':
             if translation == '':
@@ -280,7 +280,7 @@ def translite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: 
         print('', end='\n')
         print('Предлагаем следующий ключ: '+camelCase, end='\n')
         print('', end='\n')
-        print(Fore.MAGENTA+'Оставьте поле пустым, чтобы принять вариант по умолчанию (предложенный)', end='\n')
+        print(Fore.MAGENTA+'Оставьте поле пустым, чтобы принять вариант предложенный вариант', end='\n')
         tKey = input('Напишите ключ для перевода: ')
         if tKey == '':
             if camelCase == '':
