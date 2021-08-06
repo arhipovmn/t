@@ -68,6 +68,14 @@ resourcesFileName = 'resources_'+str(randint(1, 999999))+'.txt'
 
 
 def getCamelCase(noCamelCaseText: str) -> str:
+    """Приходит строка, получаем camelCase вариант этой строки
+
+    Args:
+        noCamelCaseText (str): строка
+
+    Returns:
+        str: новая строка
+    """
     camelCaseText = ''.join(x for x in noCamelCaseText.title() if not x.isspace())
     camelCaseText = camelCaseText[0].lower() + camelCaseText[1:]
     return camelCaseText
