@@ -67,7 +67,13 @@ resources = {}
 resourcesFileName = 'resources_'+str(randint(1, 999999))+'.txt'
 
 
-def checkTKey(textKey: str):
+def getCamelCase(noCamelCaseText: str) -> str:
+    camelCaseText = ''.join(x for x in noCamelCaseText.title() if not x.isspace())
+    camelCaseText = camelCaseText[0].lower() + camelCaseText[1:]
+    return camelCaseText
+
+
+def checkTKey(textKey: str) -> None:
     """Проверка ключа в resources
 
     Args:
@@ -243,7 +249,6 @@ def translite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: 
               textExclusion+'": '+('нет перевода ...' if translation == '' else translation), end='\n')
         print('', end='\n')
         print(Fore.MAGENTA+'Оставьте поле пустым, чтобы принять вариант по умолчанию (предложенный)', end='\n')
-        print('', end='\n')
         tEn = input('Напишите English вариант для "'+textExclusion+'": ')
         if tEn == '':
             if translation == '':
@@ -261,10 +266,16 @@ def translite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: 
         print('', end='\n')
         print(Fore.MAGENTA +
               'Для построения дерева ключей можно использовать символ "."\n----------\nНапример при вводе: example.getData - итоговое выражение для перевода будет таким: t(\''+moduleName+'.example.getData\', { ... })\nИмя модуля ('+moduleName+') добавляется автоматически.\nA файл с переводом будет добавлено:\n\nerror: {\n   getData: \''+tRu+'\',\n},\n----------', end='\n\n')
-        # print('Предлагаем следующий ключ: ....................', end='\n')
+        camelCase = getCamelCase(tEn)
+        print('', end='\n')
+        print('Предлагаем следующий ключ: '+camelCase, end='\n')
+        print('', end='\n')
+        print(Fore.MAGENTA+'Оставьте поле пустым, чтобы принять вариант по умолчанию (предложенный)', end='\n')
         tKey = input('Напишите ключ для перевода: ')
         if tKey == '':
-            raise EmptyValue
+            if camelCase == '':
+                raise EmptyValue
+            tKey = camelCase
         checkTKey(tKey)
         replaceTextY = '{t(\''+moduleName+'.'+tKey+'\'' + \
             ('' if varText == '' else ', { '+varText+' }')+')}'
