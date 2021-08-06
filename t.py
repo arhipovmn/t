@@ -76,7 +76,8 @@ def getCamelCase(noCamelCaseText: str) -> str:
     Returns:
         str: новая строка
     """
-    camelCaseText = ''.join(x for x in noCamelCaseText.title() if not x.isspace())
+    camelCaseText = ''.join(
+        x for x in noCamelCaseText.title() if not x.isspace())
     camelCaseText = camelCaseText[0].lower() + camelCaseText[1:]
     return camelCaseText
 
@@ -263,7 +264,8 @@ def translite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: 
                 raise EmptyValue
             #tEn = translation
             tEn = textExclusion
-        tRu = input('Напишите Russian вариант для "'+textExclusion+'" или оставьте пустым, чтобы принять как есть: ')
+        tRu = input('Напишите Russian вариант для "'+textExclusion +
+                    '" или оставьте пустым, чтобы принять как есть: ')
         if tRu == '':
             tRu = textExclusion
         if len(checkVar(tEn, False)) != len(checkVar(tRu, False)):
@@ -308,13 +310,19 @@ def translite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: 
         replaceLine = lines[numLine].replace(textReplace, replaceText, 1)
         print('', end='\n')
         print(Fore.MAGENTA+'Новая строка ('+str(numLine+1)+'):', end='\n')
-        if (numLine-3) >= 0: print(str(numLine-2)+': '+lines[numLine-3], end='')
-        if (numLine-2) >= 0: print(str(numLine-1)+': '+lines[numLine-2], end='')
-        if (numLine-1) >= 0: print(str(numLine-0)+': '+lines[numLine-1], end='')
+        if (numLine-3) >= 0:
+            print(str(numLine-2)+': '+lines[numLine-3], end='')
+        if (numLine-2) >= 0:
+            print(str(numLine-1)+': '+lines[numLine-2], end='')
+        if (numLine-1) >= 0:
+            print(str(numLine-0)+': '+lines[numLine-1], end='')
         print(Fore.GREEN+str(numLine+1)+': '+replaceLine, end='')
-        if (numLine+1) <= (len(lines)-1): print(str(numLine+2)+': '+lines[numLine+1], end='')
-        if (numLine+2) <= (len(lines)-1): print(str(numLine+3)+': '+lines[numLine+2], end='')
-        if (numLine+3) <= (len(lines)-1): print(str(numLine+4)+': '+lines[numLine+3], end='')
+        if (numLine+1) <= (len(lines)-1):
+            print(str(numLine+2)+': '+lines[numLine+1], end='')
+        if (numLine+2) <= (len(lines)-1):
+            print(str(numLine+3)+': '+lines[numLine+2], end='')
+        if (numLine+3) <= (len(lines)-1):
+            print(str(numLine+4)+': '+lines[numLine+3], end='')
         print('', end='\n\n')
         save = input('Сохраняем? (y/n): ')
         if (save == 'Y' or save == 'y'):
@@ -376,13 +384,19 @@ def markNoTranslite(file: os.DirEntry, lines: List[str], numLine: int, textExclu
         r'(.*)\n$', r'\1 // НЕ ПЕРЕВЕДЕННО !!!\n', lines[numLine], flags=re.IGNORECASE)
     print('', end='\n')
     print(Fore.MAGENTA+'Новая строка ('+str(numLine+1)+'):', end='\n')
-    if (numLine-3) >= 0: print(str(numLine-2)+': '+lines[numLine-3], end='')
-    if (numLine-2) >= 0: print(str(numLine-1)+': '+lines[numLine-2], end='')
-    if (numLine-1) >= 0: print(str(numLine-0)+': '+lines[numLine-1], end='')
+    if (numLine-3) >= 0:
+        print(str(numLine-2)+': '+lines[numLine-3], end='')
+    if (numLine-2) >= 0:
+        print(str(numLine-1)+': '+lines[numLine-2], end='')
+    if (numLine-1) >= 0:
+        print(str(numLine-0)+': '+lines[numLine-1], end='')
     print(Fore.GREEN+str(numLine+1)+': '+replaceLine, end='')
-    if (numLine+1) <= (len(lines)-1): print(str(numLine+2)+': '+lines[numLine+1], end='')
-    if (numLine+2) <= (len(lines)-1): print(str(numLine+3)+': '+lines[numLine+2], end='')
-    if (numLine+3) <= (len(lines)-1): print(str(numLine+4)+': '+lines[numLine+3], end='')
+    if (numLine+1) <= (len(lines)-1):
+        print(str(numLine+2)+': '+lines[numLine+1], end='')
+    if (numLine+2) <= (len(lines)-1):
+        print(str(numLine+3)+': '+lines[numLine+2], end='')
+    if (numLine+3) <= (len(lines)-1):
+        print(str(numLine+4)+': '+lines[numLine+3], end='')
     print('', end='\n\n')
     save = input('Сохраняем? (y/n): ')
     if (save == 'Y' or save == 'y'):
@@ -441,11 +455,11 @@ def selectKeyTranslite(file: os.DirEntry, lines: List[str], numLine: int, textEx
             print('', end='\n')
             print('Если да (y):', end='\n')
             print(str(numLine+1)+': ' +
-                lines[numLine].replace(textReplace, replaceTextY, 1))
+                  lines[numLine].replace(textReplace, replaceTextY, 1))
             print('', end='\n')
             print('Если нет (n):', end='\n')
             print(str(numLine+1)+': ' +
-                lines[numLine].replace(textReplace, replaceTextN, 1))
+                  lines[numLine].replace(textReplace, replaceTextN, 1))
             print('', end='\n')
             addCurlyBraces = input('(y/n): ')
             if (addCurlyBraces == 'Y' or addCurlyBraces == 'y'):
@@ -455,13 +469,19 @@ def selectKeyTranslite(file: os.DirEntry, lines: List[str], numLine: int, textEx
             replaceLine = lines[numLine].replace(textReplace, replaceText, 1)
             print('', end='\n')
             print(Fore.MAGENTA+'Новая строка ('+str(numLine+1)+'):', end='\n')
-            if (numLine-3) >= 0: print(str(numLine-2)+': '+lines[numLine-3], end='')
-            if (numLine-2) >= 0: print(str(numLine-1)+': '+lines[numLine-2], end='')
-            if (numLine-1) >= 0: print(str(numLine-0)+': '+lines[numLine-1], end='')
+            if (numLine-3) >= 0:
+                print(str(numLine-2)+': '+lines[numLine-3], end='')
+            if (numLine-2) >= 0:
+                print(str(numLine-1)+': '+lines[numLine-2], end='')
+            if (numLine-1) >= 0:
+                print(str(numLine-0)+': '+lines[numLine-1], end='')
             print(Fore.GREEN+str(numLine+1)+': '+replaceLine, end='')
-            if (numLine+1) <= (len(lines)-1): print(str(numLine+2)+': '+lines[numLine+1], end='')
-            if (numLine+2) <= (len(lines)-1): print(str(numLine+3)+': '+lines[numLine+2], end='')
-            if (numLine+3) <= (len(lines)-1): print(str(numLine+4)+': '+lines[numLine+3], end='')
+            if (numLine+1) <= (len(lines)-1):
+                print(str(numLine+2)+': '+lines[numLine+1], end='')
+            if (numLine+2) <= (len(lines)-1):
+                print(str(numLine+3)+': '+lines[numLine+2], end='')
+            if (numLine+3) <= (len(lines)-1):
+                print(str(numLine+4)+': '+lines[numLine+3], end='')
             print('', end='\n\n')
             save = input('Сохраняем? (y/n): ')
             if (save == 'Y' or save == 'y'):
@@ -576,13 +596,20 @@ def parseFile(file: os.DirEntry) -> None:
                         print(
                             '-----------------------------------------------------------', end='\n')
                         print(Fore.MAGENTA+timestr+': '+regex['comment'])
-                        if (numLine-3) >= 0: print(str(numLine-2)+': '+lines[numLine-3], end='')
-                        if (numLine-2) >= 0: print(str(numLine-1)+': '+lines[numLine-2], end='')
-                        if (numLine-1) >= 0: print(str(numLine-0)+': '+lines[numLine-1], end='')
-                        print(Fore.GREEN+str(numLine+1)+': '+line, end='') # <<< найденная строка тут
-                        if (numLine+1) <= (len(lines)-1): print(str(numLine+2)+': '+lines[numLine+1], end='')
-                        if (numLine+2) <= (len(lines)-1): print(str(numLine+3)+': '+lines[numLine+2], end='')
-                        if (numLine+3) <= (len(lines)-1): print(str(numLine+4)+': '+lines[numLine+3], end='')
+                        if (numLine-3) >= 0:
+                            print(str(numLine-2)+': '+lines[numLine-3], end='')
+                        if (numLine-2) >= 0:
+                            print(str(numLine-1)+': '+lines[numLine-2], end='')
+                        if (numLine-1) >= 0:
+                            print(str(numLine-0)+': '+lines[numLine-1], end='')
+                        print(Fore.GREEN+str(numLine+1)+': '+line,
+                              end='')  # <<< найденная строка тут
+                        if (numLine+1) <= (len(lines)-1):
+                            print(str(numLine+2)+': '+lines[numLine+1], end='')
+                        if (numLine+2) <= (len(lines)-1):
+                            print(str(numLine+3)+': '+lines[numLine+2], end='')
+                        if (numLine+3) <= (len(lines)-1):
+                            print(str(numLine+4)+': '+lines[numLine+3], end='')
                         for textInclusion in re.findall(regex['searchRegexInclusion'], line, flags=re.IGNORECASE):
                             textExclusion = re.sub(
                                 regex['searchRegexExclusion'], r'\1', textInclusion, flags=re.IGNORECASE)
