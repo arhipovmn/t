@@ -262,8 +262,7 @@ def translite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: 
         if tEn == '':
             if translation == '':
                 raise EmptyValue
-            #tEn = translation
-            tEn = textExclusion
+            tEn = translation
         tRu = input('Напишите Russian вариант для "'+textExclusion +
                     '" или оставьте пустым, чтобы принять как есть: ')
         if tRu == '':
