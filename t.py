@@ -240,14 +240,17 @@ def translite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: 
             translation = translation['translations'][0]['translation']
         print('', end='\n')
         print('Предлагаем English вариант для "' +
-              textExclusion+'": '+('Нет перевода ...' if translation == '' else translation), end='\n')
+              textExclusion+'": '+('нет перевода ...' if translation == '' else translation), end='\n')
+        print('', end='\n')
+        print(Fore.MAGENTA+'Оставьте поле пустым, чтобы принять вариант по умолчанию (предложенный)', end='\n')
+        print('', end='\n')
         tEn = input('Напишите English вариант для "'+textExclusion+'": ')
         if tEn == '':
             if translation == '':
                 raise EmptyValue
             #tEn = translation
             tEn = textExclusion
-        tRu = input('Напишите Russian вариант для "'+textExclusion+'": ')
+        tRu = input('Напишите Russian вариант для "'+textExclusion+'" или оставьте пустым, чтобы принять как есть: ')
         if tRu == '':
             tRu = textExclusion
         if len(checkVar(tEn, False)) != len(checkVar(tRu, False)):
