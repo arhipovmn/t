@@ -233,20 +233,23 @@ def translite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: 
         DifferentVariables: вызываем если переменные отличается
     """
     try:
-        translation = 'Нет перевода...'
+        translation = ''
         if language_translator != None:
             translation = language_translator.translate(
                 text=textExclusion, model_id='ru-en').get_result()
             translation = translation['translations'][0]['translation']
         print('', end='\n')
         print('Предлагаем English вариант для "' +
-              textExclusion+'": '+translation, end='\n')
+              textExclusion+'": '+('Нет перевода ...' if translation == '' else translation), end='\n')
         tEn = input('Напишите English вариант для "'+textExclusion+'": ')
         if tEn == '':
-            raise EmptyValue
+            if translation == '':
+                raise EmptyValue
+            #tEn = translation
+            tEn = textExclusion
         tRu = input('Напишите Russian вариант для "'+textExclusion+'": ')
         if tRu == '':
-            raise EmptyValue
+            tRu = textExclusion
         if len(checkVar(tEn, False)) != len(checkVar(tRu, False)):
             raise DifferentCountVariables
         if getVarText(checkVar(tEn, False)) != getVarText(checkVar(tRu, False)):
