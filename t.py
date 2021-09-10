@@ -652,10 +652,10 @@ def selectAction(file: os.DirEntry, lines: List[str], numLine: int, textExclusio
     elif select == '4':
         print(Fore.MAGENTA+' ... используем существующий перевод', end='\n')
         selectKeyTranslite(file, lines, numLine, textExclusion, textReplace)
-    elif optionNum > 4 and (int(select) > 4 and int(select) < optionNum):
+    elif optionNum > 4 and (int(select) > 4 and int(select) <= optionNum):
         print(Fore.MAGENTA+' ... используем выбранный существующий перевод', end='\n')
         setOption(file, lines, numLine, optionsKey[int(
-            select)-4], textExclusion, textReplace)
+            select)-5], textExclusion, textReplace)
     else:
         selectAction(file, lines, numLine, textExclusion, textReplace)
 
