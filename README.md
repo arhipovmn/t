@@ -9,6 +9,7 @@
 Create .env file: 
 ```
 PATH_MODULE="С:\\patch\\to\\folder\\core\\js\\newCore\\folder"
+PATH_RESOURCES="С:\\patch\\to\\folder\\translation\\resources.js"
 MODULE_NAME="mbo"
 TRANSLATE_TO_ENG="N"
 IBM_API_KEY=""

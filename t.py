@@ -16,6 +16,10 @@ init(autoreset=True)
 config = dotenv_values(".env")
 
 pathModule = config['PATH_MODULE']
+
+pathResources = config['PATH_RESOURCES']
+resourcesData = {}
+
 moduleName = config['MODULE_NAME']
 
 language_translator = None
@@ -63,7 +67,7 @@ class NoSelect(Exception):
     pass
 
 
-resources = {}
+resourcesNewData = {}
 resourcesFileName = 'resources_'+str(randint(1, 999999))+'.txt'
 
 
@@ -83,7 +87,7 @@ def getCamelCase(noCamelCaseText: str) -> str:
 
 
 def checkTKey(textKey: str) -> None:
-    """Проверка ключа в resources
+    """Проверка ключа в resourcesNewData
 
     Args:
         textKey (str): ключ
@@ -111,12 +115,12 @@ def checkTKey(textKey: str) -> None:
             else:
                 structure[key] = structure[key] if key in structure else {}
                 checkStructure(structure[key], listKey)
-    resources['EN'] = resources['EN'] if 'EN' in resources else {}
-    checkStructure(resources['EN'], textKey.split('.'))
+    resourcesNewData['EN'] = resourcesNewData['EN'] if 'EN' in resourcesNewData else {}
+    checkStructure(resourcesNewData['EN'], textKey.split('.'))
 
 
 def addResources(text: str, textKey: str, lang: str) -> None:
-    """Добавление ключа с текстом English / Russian версий, в дерево resources
+    """Добавление ключа с текстом English / Russian версий, в дерево resourcesNewData
 
     Args:
         text (str): текст
@@ -130,8 +134,8 @@ def addResources(text: str, textKey: str, lang: str) -> None:
         else:
             structure[key] = structure[key] if key in structure else {}
             setStructure(structure[key], listKey)
-    resources[lang] = resources[lang] if lang in resources else {}
-    setStructure(resources[lang], textKey.split('.'))
+    resourcesNewData[lang] = resourcesNewData[lang] if lang in resourcesNewData else {}
+    setStructure(resourcesNewData[lang], textKey.split('.'))
 
 
 def saveResources() -> None:
@@ -143,17 +147,17 @@ def saveResources() -> None:
     """
     space = ''
 
-    def getText(resources: dict, space: str):
+    def getText(resourcesNewData: dict, space: str):
         text = ''
-        for key in resources:
-            if (type(resources[key]) == str):
-                text = text+space+key+': \''+resources[key]+'\',\n'
+        for key in resourcesNewData:
+            if (type(resourcesNewData[key]) == str):
+                text = text+space+key+': \''+resourcesNewData[key]+'\',\n'
             else:
                 text = text+space+key + \
-                    ': {\n'+getText(resources[key],
+                    ': {\n'+getText(resourcesNewData[key],
                                     space+'   ')+space+'},\n'
         return text
-    text = getText(resources, space)
+    text = getText(resourcesNewData, space)
     mode = 'w' if os.path.isfile(resourcesFileName) else 'a'
     with open(resourcesFileName, mode, encoding='utf-8') as f:
         f.write(text)
@@ -502,6 +506,77 @@ def selectKeyTranslite(file: os.DirEntry, lines: List[str], numLine: int, textEx
         selectKeyTranslite(file, lines, numLine, textExclusion, textReplace)
 
 
+def setOption(file: os.DirEntry, lines: List[str], numLine: int, option: dict, textExclusion: str, textReplace: str) -> None:
+    """Устанавливаем выбранный существующий перивод
+
+    Args:
+        file (os.DirEntry): файл, который парсим (его будем изменять)
+        lines (List[str]): все строки в файле
+        numLine (int): номер строки в файле, который парсим
+        option (dict): выбранный существующий перевод
+        textExclusion (str): текст в строке который был ранее распарсен
+        textReplace (str): регулярное выражение для замены
+    """
+    try:
+        varText = getVarText(checkVar(option['value']))
+        replaceTextY = '{t(\''+option['key']+'\'' + \
+            ('' if varText == '' else ', { '+varText+' }')+')}'
+        replaceTextN = 't(\''+option['key']+'\'' + \
+            ('' if varText == '' else ', { '+varText+' }')+')'
+        print('', end='\n')
+        print('Добавить фигурные скобки?', end='\n')
+        print('', end='\n')
+        print('Если да (y):', end='\n')
+        print(str(numLine+1)+': ' +
+              lines[numLine].replace(textReplace, replaceTextY, 1))
+        print('', end='\n')
+        print('Если нет (n):', end='\n')
+        print(str(numLine+1)+': ' +
+              lines[numLine].replace(textReplace, replaceTextN, 1))
+        print('', end='\n')
+        addCurlyBraces = input('(y/n): ')
+        if (addCurlyBraces == 'Y' or addCurlyBraces == 'y'):
+            replaceText = replaceTextY
+        else:
+            replaceText = replaceTextN
+        replaceLine = lines[numLine].replace(textReplace, replaceText, 1)
+        print('', end='\n')
+        print(Fore.MAGENTA+'Новая строка ('+str(numLine+1)+'):', end='\n')
+        if (numLine-3) >= 0:
+            print(str(numLine-2)+': '+lines[numLine-3], end='')
+        if (numLine-2) >= 0:
+            print(str(numLine-1)+': '+lines[numLine-2], end='')
+        if (numLine-1) >= 0:
+            print(str(numLine-0)+': '+lines[numLine-1], end='')
+        print(Fore.GREEN+str(numLine+1)+': '+replaceLine, end='')
+        if (numLine+1) <= (len(lines)-1):
+            print(str(numLine+2)+': '+lines[numLine+1], end='')
+        if (numLine+2) <= (len(lines)-1):
+            print(str(numLine+3)+': '+lines[numLine+2], end='')
+        if (numLine+3) <= (len(lines)-1):
+            print(str(numLine+4)+': '+lines[numLine+3], end='')
+        print('', end='\n\n')
+        save = input('Сохраняем? (y/n): ')
+        if (save == 'Y' or save == 'y'):
+            with open(file, 'w', encoding='utf-8') as f:
+                lines[numLine] = replaceLine
+                f.writelines(lines)
+                f.close()
+                saveResources()
+                timestr = datetime.now().strftime('%H:%M:%S')
+                print(Fore.GREEN+timestr+' Сохранено!', end='\n\n')
+        else:
+            repeat = input(
+                'Перейти снова к выбору действий для данной строки? (y/n): ')
+            if (repeat == 'Y' or repeat == 'y'):
+                selectAction(file, lines, numLine, textExclusion, textReplace)
+            else:
+                print('', end='\n\n')
+    except Exception:
+        print(Fore.RED+'Хм, какая-то не предвиденная ошибка =/ ... попробуйте выбрать перевод ещё раз', end='\n')
+        selectAction(file, lines, numLine, textExclusion, textReplace)
+
+
 def selectAction(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: str, textReplace: str) -> None:
     """Выбор действия по найденой строке
 
@@ -515,8 +590,49 @@ def selectAction(file: os.DirEntry, lines: List[str], numLine: int, textExclusio
     print('Выберите опцию:')
     print('1 - игнорировать;')
     print('2 - перевести;')
-    print('3 - отметить как непереведенное;', end='\n')
+    print('3 - отметить как непереведенное;')
     print('4 - использовать существующий перевод;', end='\n')
+
+    textExclusionOnlyCyrillic = re.sub('[^а-яА-Я\s]', '', textExclusion)
+    optionsKey = []
+    keyList = []
+
+    def searchOptionsKey(resourcesData: dict) -> None:
+        """Поиск существующего перевода
+
+        Args:
+            resourcesData (dict): словарь перевода, который ранее мы создали из файла перевода (.env: PATH_RESOURCES)
+        """
+        for key in resourcesData.keys():
+            if key != 'cz' and key != 'ru' and key != 'translation': keyList.append(key)
+            if not isinstance(resourcesData[key], str):
+                searchOptionsKey(resourcesData[key])
+            else:
+                def add():
+                    optionsKey.append({
+                        'key': '.'.join(keyList),
+                        'value': resourcesData[key],
+                    })
+                if resourcesData[key].find(textExclusion) != -1:
+                    add()
+                elif resourcesData[key].find(textExclusionOnlyCyrillic) != -1:
+                    add()
+                elif re.sub('[^а-яА-Я\s]', '', resourcesData[key]).find(textExclusion) != -1:
+                    add()
+                elif re.sub('[^а-яА-Я\s]', '', resourcesData[key]).find(textExclusionOnlyCyrillic) != -1:
+                    add()
+            if (len(keyList)): keyList.pop()
+    searchOptionsKey(resourcesData)
+
+    optionNum = 4
+    if len(optionsKey):
+        print('', end='\n')
+        print('Найдены существующие варианты переводов (выберите опцию):', end='\n')
+        for option in optionsKey:
+            optionNum += 1
+            print(str(optionNum) + ' - "' +
+                  option['value'] + '" (ключ: "' + option['key'] + '");')
+
     select = input(': ')
     if select == '1':
         print(Fore.MAGENTA+' ... игнорировано', end='\n')
@@ -531,6 +647,10 @@ def selectAction(file: os.DirEntry, lines: List[str], numLine: int, textExclusio
     elif select == '4':
         print(Fore.MAGENTA+' ... используем существующий перевод', end='\n')
         selectKeyTranslite(file, lines, numLine, textExclusion, textReplace)
+    elif optionNum > 4 and (int(select) > 4 and int(select) < optionNum):
+        print(Fore.MAGENTA+' ... используем выбранный существующий перевод', end='\n')
+        setOption(file, lines, numLine, optionsKey[int(
+            select)-4], textExclusion, textReplace)
     else:
         selectAction(file, lines, numLine, textExclusion, textReplace)
 
@@ -633,7 +753,7 @@ def parseFile(file: os.DirEntry) -> None:
         print('-----------------------------------------------------------', end='\n')
 
 
-def scandir(pathModule: str) -> None:
+def scanDir(pathModule: str) -> None:
     """Сканирование каталога
 
     Args:
@@ -644,11 +764,45 @@ def scandir(pathModule: str) -> None:
     for file in os.scandir(pathModule):
         if file.is_dir():
             print(Fore.GREEN+timestr+': Обнаружен каталог: '+file.path)
-            scandir(file.path)
+            scanDir(file.path)
         else:
             if re.search('\.(:?js|ts|jsx|tsx)$', file.name, flags=re.IGNORECASE):
                 print(Fore.CYAN+timestr+': Обнаружен файл: '+file.name)
                 parseFile(file)
 
 
-scandir(pathModule)
+"""Читаем файл (.env: PATH_RESOURCES) перевода, парсим его, и на его основе создаем словарь
+"""
+with open(pathResources, 'r', encoding='utf-8') as f:
+    def changeResourcesData(keyList: list[str]) -> dict:
+        resourcesDataLink = resourcesData
+        for key in keyList:
+            if resourcesDataLink.get(key):
+                resourcesDataLink = resourcesDataLink[key]
+            else:
+                resourcesDataLink[key] = {}
+                resourcesDataLink = resourcesDataLink[key]
+        return resourcesDataLink
+    keyList = []
+    for line in f.readlines():
+        beginJsObject = re.search(
+            '^[\s\t]*([a-zA-Z]+)\:[\s]{0,1}\{[\s]*$', line, flags=re.IGNORECASE)
+        if beginJsObject:
+            keyList.append(beginJsObject.expand(r'\1'))
+            changeResourcesData(keyList)
+            continue
+        endJsObject = re.search(
+            '^[\s\t]*\}[,]*[\s]*$', line, flags=re.IGNORECASE)
+        if endJsObject:
+            keyList.pop()
+            changeResourcesData(keyList)
+            continue
+        propertyJsObject = re.search(
+            '^[\s\t]*([a-zA-Z]+)\:[\s]{0,1}[\'|"](.+)[\'|"][,]*[\s]*$', line, flags=re.IGNORECASE)
+        if propertyJsObject:
+            data = changeResourcesData(keyList)
+            data[propertyJsObject.expand(
+                r'\1')] = propertyJsObject.expand(r'\2')
+
+
+scanDir(pathModule)
