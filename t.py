@@ -594,6 +594,7 @@ def selectAction(file: os.DirEntry, lines: List[str], numLine: int, textExclusio
     print('4 - использовать существующий перевод;', end='\n')
 
     textExclusionOnlyCyrillic = re.sub('[^а-яА-Я\s]', '', textExclusion)
+    textExclusionOnlyCyrillicNoSpace = re.sub('[^а-яА-Я]', '', textExclusion)
     optionsKey = []
     keyList = []
 
@@ -613,13 +614,17 @@ def selectAction(file: os.DirEntry, lines: List[str], numLine: int, textExclusio
                         'key': '.'.join(keyList),
                         'value': resourcesData[key],
                     })
-                if resourcesData[key].find(textExclusion) != -1:
+                if textExclusion.lower() in resourcesData[key].lower():
                     add()
-                elif resourcesData[key].find(textExclusionOnlyCyrillic) != -1:
+                elif textExclusionOnlyCyrillic.lower() in resourcesData[key].lower():
                     add()
-                elif re.sub('[^а-яА-Я\s]', '', resourcesData[key]).find(textExclusion) != -1:
+                elif textExclusionOnlyCyrillicNoSpace.lower() in resourcesData[key].lower():
                     add()
-                elif re.sub('[^а-яА-Я\s]', '', resourcesData[key]).find(textExclusionOnlyCyrillic) != -1:
+                elif textExclusion.lower() in re.sub('[^а-яА-Я\s]', '', resourcesData[key]).lower():
+                    add()
+                elif textExclusionOnlyCyrillic.lower() in re.sub('[^а-яА-Я\s]', '', resourcesData[key]).lower():
+                    add()
+                elif textExclusionOnlyCyrillicNoSpace.lower() in re.sub('[^а-яА-Я]', '', resourcesData[key]).lower():
                     add()
             if (len(keyList)): keyList.pop()
     searchOptionsKey(resourcesData)
