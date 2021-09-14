@@ -67,10 +67,6 @@ class NoSelect(Exception):
     pass
 
 
-resourcesNewData = {}
-resourcesFileName = 'resources_'+str(randint(1, 999999))+'.txt'
-
-
 def getCamelCase(noCamelCaseText: str) -> str:
     """Приходит строка, получаем camelCase вариант этой строки
 
@@ -87,20 +83,20 @@ def getCamelCase(noCamelCaseText: str) -> str:
 
 
 def checkTKey(textKey: str) -> None:
-    """Проверка ключа в resourcesNewData
+    """Проверка ключа в resourcesData, на момент возможной перезаписи и пр. ошибки
 
     Args:
         textKey (str): ключ
     """
     def checkStructure(structure: str, listKey: List[str]):
-        """Рекурсивная проверка дерева 
+        """Рекурсивная проверка дерева ключей resourcesData
 
         Args:
             structure (str): текущая структура проверки
             listKey (List[str]): оставшиеся ключи
 
         Raises:
-            EmptyValueKey: вызываем если ключ пуст
+            EmptyValueKey: вызываем если имя ключа - пустая строка
             ForbiddenRewriting: вызываем если будет перезапись
         """
         key = listKey.pop(0)
@@ -115,17 +111,19 @@ def checkTKey(textKey: str) -> None:
             else:
                 structure[key] = structure[key] if key in structure else {}
                 checkStructure(structure[key], listKey)
-    resourcesNewData['EN'] = resourcesNewData['EN'] if 'EN' in resourcesNewData else {}
-    checkStructure(resourcesNewData['EN'], textKey.split('.'))
+    lang = 'ru' # проверяем дерево ключей исключительно по RU версии
+    resourcesData[lang] = resourcesData[lang] if lang in resourcesData else {}
+    resourcesData[lang]['translation'] = resourcesData[lang]['translation'] if 'translation' in resourcesData[lang] else {}
+    checkStructure(resourcesData[lang]['translation'], textKey.split('.'))
 
 
 def addResources(text: str, textKey: str, lang: str) -> None:
-    """Добавление ключа с текстом English / Russian версий, в дерево resourcesNewData
+    """Добавление ключ:значение в дерево resourcesData
 
     Args:
         text (str): текст
         textKey (str): ключ
-        lang (str): EN / RU версия
+        lang (str): en / ru / cz / etc версия
     """
     def setStructure(structure: str, listKey: List[str]):
         key = listKey.pop(0)
@@ -134,33 +132,38 @@ def addResources(text: str, textKey: str, lang: str) -> None:
         else:
             structure[key] = structure[key] if key in structure else {}
             setStructure(structure[key], listKey)
-    resourcesNewData[lang] = resourcesNewData[lang] if lang in resourcesNewData else {}
-    setStructure(resourcesNewData[lang], textKey.split('.'))
+    resourcesData[lang] = resourcesData[lang] if lang in resourcesData else {}
+    resourcesData[lang]['translation'] = resourcesData[lang]['translation'] if 'translation' in resourcesData[lang] else {}
+    setStructure(resourcesData[lang]['translation'], textKey.split('.'))
 
 
 def saveResources() -> None:
     """Генерирует текст в виде типа данных Object в JavaScript
-    и сохраняет этот текст в файл
+    и сохраняет этот текст в файл перевода
 
     Returns:
         None: None
     """
-    space = ''
+    space = '    '
 
-    def getText(resourcesNewData: dict, space: str):
+    def getText(resourcesData: dict, space: str):
         text = ''
-        for key in resourcesNewData:
-            if (type(resourcesNewData[key]) == str):
-                text = text+space+key+': \''+resourcesNewData[key]+'\',\n'
+        for key in resourcesData:
+            if (type(resourcesData[key]) == str):
+                text = text+space+key+': '+ ('\''+resourcesData[key]+'\',\n' if resourcesData[key].find('[', 0, 1) == -1 else resourcesData[key]+',\n')
             else:
                 text = text+space+key + \
-                    ': {\n'+getText(resourcesNewData[key],
-                                    space+'   ')+space+'},\n'
+                    ': {\n'+getText(resourcesData[key],
+                                    space+'    ')+space+'},\n'
         return text
-    text = getText(resourcesNewData, space)
-    mode = 'w' if os.path.isfile(resourcesFileName) else 'a'
-    with open(resourcesFileName, mode, encoding='utf-8') as f:
-        f.write(text)
+    text = getText(resourcesData, space)
+    mode = 'w' if os.path.isfile(pathResources) else 'a'
+    with open(pathResources, mode, encoding='utf-8') as f:
+        f.write('const resources = {\n\
+'+text+'\
+};\n\
+\n\
+export default resources;\n')
         f.close()
 
 
@@ -278,7 +281,7 @@ def translite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: 
         varText = getVarText(checkVar(tEn))
         print('', end='\n')
         print(Fore.MAGENTA +
-              'Для построения дерева ключей можно использовать символ "."\n----------\nНапример при вводе: example.getData - итоговое выражение для перевода будет таким: t(\''+moduleName+'.example.getData\', { ... })\nИмя модуля ('+moduleName+') добавляется автоматически.\nA файл с переводом будет добавлено:\n\nerror: {\n   getData: \''+tRu+'\',\n},\n----------', end='\n\n')
+              'Для построения дерева ключей можно использовать символ "."\n----------\nНапример при вводе: example.getData - итоговое выражение для перевода будет таким: t(\''+moduleName+'.example.getData\', { ... })\nИмя модуля ('+moduleName+') добавляется автоматически!\nA файл с переводом будет добавлено:\n\n'+moduleName+': {\n    example: {\n        getData: \''+tRu+'\',\n    },\n},\n----------', end='\n\n')
         camelCase = getCamelCase(tEn)
         print('', end='\n')
         print('Предлагаем следующий ключ: '+camelCase, end='\n')
@@ -298,10 +301,11 @@ def translite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: 
             if camelCase == '':
                 raise EmptyValue
             tKey = camelCase
+        tKey = moduleName+'.'+tKey
         checkTKey(tKey)
-        replaceTextY = '{t(\''+moduleName+'.'+tKey+'\'' + \
+        replaceTextY = '{t(\''+tKey+'\'' + \
             ('' if varText == '' else ', { '+varText+' }')+')}'
-        replaceTextN = 't(\''+moduleName+'.'+tKey+'\'' + \
+        replaceTextN = 't(\''+tKey+'\'' + \
             ('' if varText == '' else ', { '+varText+' }')+')'
         print('', end='\n')
         print('Добавить фигурные скобки?', end='\n')
@@ -338,8 +342,8 @@ def translite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: 
         print('', end='\n\n')
         save = input('Сохраняем? (y/n): ')
         if (save == 'Y' or save == 'y'):
-            addResources(tEn, tKey, 'EN')
-            addResources(tRu, tKey, 'RU')
+            # addResources(tEn, tKey, 'EN')
+            addResources(tRu, tKey, 'ru')
             with open(file, 'w', encoding='utf-8') as f:
                 lines[numLine] = replaceLine
                 f.writelines(lines)
@@ -812,11 +816,19 @@ with open(pathResources, 'r', encoding='utf-8') as f:
             changeResourcesData(keyList)
             continue
         propertyJsObject = re.search(
-            '^[\s\t]*([a-zA-Z]+)\:[\s]{0,1}[\'|"](.+)[\'|"][,]*[\s]*$', line, flags=re.IGNORECASE)
+            '^[\s\t]*([a-zA-Z0-9_]+)\:[\s]{0,1}[\'|"](.+)[\'|"][,]*[\s]*[\+]*[\s]*$', line, flags=re.IGNORECASE)
         if propertyJsObject:
             data = changeResourcesData(keyList)
             data[propertyJsObject.expand(
                 r'\1')] = propertyJsObject.expand(r'\2')
+            continue
+        propertyJsObject = re.search(
+            '^[\s\t]*([a-zA-Z0-9_]+)\:[\s]{0,1}(\[.+\])[,]*[\s]*$', line, flags=re.IGNORECASE)
+        if propertyJsObject:
+            data = changeResourcesData(keyList)
+            data[propertyJsObject.expand(
+                r'\1')] = propertyJsObject.expand(r'\2')
+            continue
 
 
 scanDir(pathModule)
