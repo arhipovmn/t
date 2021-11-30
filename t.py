@@ -123,7 +123,7 @@ def addResources(text: str, textKey: str, lang: str) -> None:
     Args:
         text (str): текст
         textKey (str): ключ
-        lang (str): en / ru / cz / etc версия
+        lang (str): en / ru / cs / etc версия
     """
     def setStructure(structure: str, listKey: List[str]):
         key = listKey.pop(0)
@@ -618,7 +618,7 @@ def selectAction(file: os.DirEntry, lines: List[str], numLine: int, textExclusio
             resourcesData (dict): словарь перевода, который ранее мы создали из файла перевода (.env: PATH_RESOURCES)
         """
         for key in resourcesData.keys():
-            if key != 'cz' and key != 'ru' and key != 'translation': keyList.append(key)
+            if key != 'cs' and key != 'ru' and key != 'translation': keyList.append(key)
             if not isinstance(resourcesData[key], str):
                 searchOptionsKey(resourcesData[key])
             else:
