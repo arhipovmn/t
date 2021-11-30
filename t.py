@@ -287,7 +287,7 @@ def translite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: 
         print('Предлагаем следующий ключ: '+camelCase, end='\n')
         pathKey = ''
         try:
-            pathKeyList = file.path.partition('\\newCore\\src\\'+moduleName+'\\')[2].split('\\')
+            pathKeyList = file.path.partition(pathModule)[2].split('\\')
             pathKeyListLastEl = pathKeyList[len(pathKeyList)-1].split('.')
             pathKeyList[len(pathKeyList)-1] = pathKeyListLastEl[0]
             pathKey = '.'.join(pathKeyList)+'.'+camelCase
