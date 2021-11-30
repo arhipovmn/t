@@ -618,6 +618,7 @@ def selectAction(file: os.DirEntry, lines: List[str], numLine: int, textExclusio
             resourcesData (dict): словарь перевода, который ранее мы создали из файла перевода (.env: PATH_RESOURCES)
         """
         for key in resourcesData.keys():
+            if len(optionsKey) >= 296: break
             if key != 'cs' and key != 'ru' and key != 'translation': keyList.append(key)
             if not isinstance(resourcesData[key], str):
                 searchOptionsKey(resourcesData[key])
