@@ -588,7 +588,7 @@ def selectAction(file: os.DirEntry, lines: List[str], numLine: int, textExclusio
         """
         for key in resourcesData.keys():
             if len(optionsKey) >= 296: break
-            if resourcesData.get(key) != None and key != 'translation': keyList.append(key)
+            if key != 'translation': keyList.append(key)
             if not isinstance(resourcesData[key], str):
                 searchOptionsKey(resourcesData[key])
             else:
@@ -610,7 +610,7 @@ def selectAction(file: os.DirEntry, lines: List[str], numLine: int, textExclusio
                 elif textExclusionOnlyCyrillicNoSpace.lower() in re.sub('[^а-яА-Я]', '', resourcesData[key]).lower():
                     add()
             if (len(keyList)): keyList.pop()
-    searchOptionsKey(resourcesData)
+    searchOptionsKey(resourcesData['ru'])
 
     optionNum = 4
     if len(optionsKey):
