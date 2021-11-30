@@ -44,16 +44,6 @@ class EmptyValueKey(Exception):
         self.tKey = tKey
 
 
-class DifferentVariables(Exception):
-    """Исключение если переменные разные"""
-    pass
-
-
-class DifferentCountVariables(Exception):
-    """Исключение если разное количество переменных"""
-    pass
-
-
 class ForbiddenRewriting(Exception):
     """Исключение если будет перезапись ключа"""
 
@@ -190,7 +180,7 @@ def checkVar(t: str, inputEnable: bool = True) -> Union[List[dict], List]:
     """Получение переменных (inputEnable=True) или проверка переменных (inputEnable=False)
 
     Args:
-        t (str): текст строки English или Russian версии
+        t (str): текст проверяемой строки
         inputEnable (bool, optional): если необходим вывод с получением переменных и их значений иначе просто проверка переменных. Defaults to True.
 
     Raises:
@@ -240,7 +230,7 @@ def checkVar(t: str, inputEnable: bool = True) -> Union[List[dict], List]:
 
 
 def translite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: str, textReplace: str) -> None:
-    """Указываем English / Russina версии переводов и всякие проверки
+    """Указываем перевод строки и всякие проверки строки...
 
     Args:
         file (os.DirEntry): файл, который парсим (его будем изменять)
@@ -260,29 +250,14 @@ def translite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: 
             translation = language_translator.translate(
                 text=textExclusion, model_id='ru-en').get_result()
             translation = translation['translations'][0]['translation']
-        print('', end='\n')
-        print('Предлагаем English вариант для "' +
-              textExclusion+'": '+('нет перевода ...' if translation == '' else translation), end='\n')
-        print('', end='\n')
-        print(Fore.MAGENTA+'Оставьте поле пустым, чтобы принять предложенный вариант вариант', end='\n')
-        tEn = input('Напишите English вариант для "'+textExclusion+'": ')
-        if tEn == '':
-            if translation == '':
-                raise EmptyValue
-            tEn = translation
-        tRu = input('Напишите Russian вариант для "'+textExclusion +
-                    '" или оставьте пустым, чтобы принять как есть: ')
+        tRu = input('Укажите строку перевода для "'+textExclusion +'" или оставьте пустым, чтобы принять как есть: ')
         if tRu == '':
             tRu = textExclusion
-        if len(checkVar(tEn, False)) != len(checkVar(tRu, False)):
-            raise DifferentCountVariables
-        if getVarText(checkVar(tEn, False)) != getVarText(checkVar(tRu, False)):
-            raise DifferentVariables
-        varText = getVarText(checkVar(tEn))
+        varText = getVarText(checkVar(tRu))
         print('', end='\n')
         print(Fore.MAGENTA +
               'Для построения дерева ключей можно использовать символ "."\n----------\nНапример при вводе: example.getData - итоговое выражение для перевода будет таким: t(\''+moduleName+'.example.getData\', { ... })\nИмя модуля ('+moduleName+') добавляется автоматически!\nA файл с переводом будет добавлено:\n\n'+moduleName+': {\n    example: {\n        getData: \''+tRu+'\',\n    },\n},\n----------', end='\n\n')
-        camelCase = getCamelCase(tEn)
+        camelCase = getCamelCase(translation)
         print('', end='\n')
         print('Предлагаем следующий ключ: '+camelCase, end='\n')
         pathKey = ''
@@ -363,12 +338,6 @@ def translite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: 
                                  textExclusion, textReplace)
                 else:
                     print('', end='\n\n')
-    except DifferentCountVariables:
-        print(Fore.RED+'Ошибка! Разное количество переменных в English / Russian версиях, повторите перевод', end='\n')
-        translite(file, lines, numLine, textExclusion, textReplace)
-    except DifferentVariables:
-        print(Fore.RED+'Ошибка! Разные переменные в English / Russian версиях, повторите перевод', end='\n')
-        translite(file, lines, numLine, textExclusion, textReplace)
     except EmptyValue:
         print(Fore.RED+'Ошибка! Значение не может быть пустым, повторите перевод', end='\n')
         translite(file, lines, numLine, textExclusion, textReplace)
