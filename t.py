@@ -317,8 +317,8 @@ def translite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: 
         print('', end='\n\n')
         save = input('Сохраняем? (y/n): ')
         if (save == 'Y' or save == 'y'):
-            # addResources(tEn, tKey, 'EN')
-            addResources(tRu, tKey, 'ru')
+            for key in resourcesData.keys():
+                addResources(tRu, tKey, key)
             with open(file, 'w', encoding='utf-8') as f:
                 lines[numLine] = replaceLine
                 f.writelines(lines)
@@ -588,7 +588,7 @@ def selectAction(file: os.DirEntry, lines: List[str], numLine: int, textExclusio
         """
         for key in resourcesData.keys():
             if len(optionsKey) >= 296: break
-            if key != 'cs' and key != 'ru' and key != 'translation': keyList.append(key)
+            if resourcesData.get(key) != None and key != 'translation': keyList.append(key)
             if not isinstance(resourcesData[key], str):
                 searchOptionsKey(resourcesData[key])
             else:
