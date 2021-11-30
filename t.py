@@ -597,7 +597,13 @@ def selectAction(file: os.DirEntry, lines: List[str], numLine: int, textExclusio
                         'key': '.'.join(keyList),
                         'value': resourcesData[key],
                     })
-                if textExclusion.lower() in resourcesData[key].lower():
+                if len(textExclusionOnlyCyrillicNoSpace) > len(resourcesData[key]):
+                    if (len(keyList)): keyList.pop()
+                    continue
+                elif len(textExclusionOnlyCyrillicNoSpace)+12 < len(resourcesData[key]):
+                    if (len(keyList)): keyList.pop()
+                    continue
+                elif textExclusion.lower() in resourcesData[key].lower():
                     add()
                 elif textExclusionOnlyCyrillic.lower() in resourcesData[key].lower():
                     add()
