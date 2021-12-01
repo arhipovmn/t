@@ -601,7 +601,7 @@ def selectAction(file: os.DirEntry, lines: List[str], numLine: int, textExclusio
                 if len(textExclusionOnlyCyrillicNoSpace) > len(resourcesData[key]):
                     if (len(keyList)): keyList.pop()
                     continue
-                elif len(textExclusionOnlyCyrillicNoSpace)+12 < len(resourcesData[key]):
+                elif len(textExclusionOnlyCyrillicNoSpace)+6 < len(re.sub('[^а-яА-Я\s]', '', resourcesData[key])):
                     if (len(keyList)): keyList.pop()
                     continue
                 elif textExclusion.lower() in resourcesData[key].lower():
@@ -614,7 +614,7 @@ def selectAction(file: os.DirEntry, lines: List[str], numLine: int, textExclusio
                     add()
                 elif textExclusionOnlyCyrillic.lower() in re.sub('[^а-яА-Я\s]', '', resourcesData[key]).lower():
                     add()
-                elif textExclusionOnlyCyrillicNoSpace.lower() in re.sub('[^а-яА-Я]', '', resourcesData[key]).lower():
+                elif textExclusionOnlyCyrillicNoSpace.lower() in re.sub('[^а-яА-Я\s]', '', resourcesData[key]).lower():
                     add()
             if (len(keyList)): keyList.pop()
     searchOptionsKey(resourcesData['ru'])
