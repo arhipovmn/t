@@ -256,27 +256,28 @@ def translite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: 
         varText = getVarText(checkVar(tRu))
         print('', end='\n')
         print(Fore.MAGENTA +
-              'Для построения дерева ключей можно использовать символ "."\n----------\nНапример при вводе: example.getData - итоговое выражение для перевода будет таким: t(\''+moduleName+'.example.getData\', { ... })\nИмя модуля ('+moduleName+') добавляется автоматически!\nA файл с переводом будет добавлено:\n\n'+moduleName+': {\n    example: {\n        getData: \''+tRu+'\',\n    },\n},\n----------', end='\n\n')
+              'Для построения дерева ключей можно использовать символ "."\n----------\nНапример при вводе: '+moduleName+'.example.getData - итоговое выражение для перевода будет таким: t(\''+moduleName+'.example.getData\', { ... })\nИмя модуля ('+moduleName+') автоматически НЕ добавляется!\nВ файл с переводом будет добавлено:\n\n'+moduleName+': {\n    example: {\n        getData: \''+tRu+'\',\n    },\n},\n----------', end='\n\n')
         camelCase = getCamelCase(translation)
         print('', end='\n')
-        print('Предлагаем следующий ключ: '+camelCase, end='\n')
+        print('Предлагаем следующий ключ: '+moduleName+'.'+camelCase, end='\n')
         pathKey = ''
         try:
             pathKeyList = file.path.partition(pathModule)[2].split('\\')
             pathKeyListLastEl = pathKeyList[len(pathKeyList)-1].split('.')
             pathKeyList[len(pathKeyList)-1] = pathKeyListLastEl[0]
             pathKey = '.'.join(pathKeyList)+'.'+camelCase
-            print('Или такой ключ: '+pathKey, end='\n')
+            print('Или такой ключ: '+moduleName+pathKey, end='\n')
         except:
             pass
         print('', end='\n')
-        print(Fore.MAGENTA+'Оставьте поле пустым, чтобы принять '+('первый ' if pathKey != '' else '')+'предложенный вариант вариант', end='\n')
+        print(Fore.MAGENTA+'Оставьте поле пустым, чтобы принять '+('первый ' if pathKey != '' else '')+'предложенный вариант'+(' или введите цифру "2", чтобы принять второй вариант ключа' if pathKey != '' else ''), end='\n')
         tKey = input('Напишите ключ для перевода: ')
         if tKey == '':
             if camelCase == '':
                 raise EmptyValue
-            tKey = camelCase
-        tKey = moduleName+'.'+tKey
+            tKey = moduleName+'.'+camelCase
+        if tKey == '2':
+            tKey = moduleName+pathKey
         checkTKey(tKey)
         replaceTextY = '{t(\''+tKey+'\'' + \
             ('' if varText == '' else ', { '+varText+' }')+')}'
