@@ -69,7 +69,7 @@ def getCamelCase(noCamelCaseText: str) -> str:
     camelCaseText = ''.join(
         x for x in noCamelCaseText.title() if not x.isspace())
     camelCaseText = camelCaseText[0].lower() + camelCaseText[1:]
-    return camelCaseText
+    return re.sub('[^a-zA-Z]', '', camelCaseText)
 
 
 def checkTKey(textKey: str) -> None:
