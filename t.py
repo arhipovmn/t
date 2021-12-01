@@ -601,7 +601,7 @@ def selectAction(file: os.DirEntry, lines: List[str], numLine: int, textExclusio
                 if len(textExclusionOnlyCyrillicNoSpace) > len(resourcesData[key]):
                     if (len(keyList)): keyList.pop()
                     continue
-                elif len(textExclusionOnlyCyrillicNoSpace)+12 < len(re.sub('[^а-яА-Я]', '', resourcesData[key])):
+                elif len(textExclusionOnlyCyrillicNoSpace)+6 < len(re.sub('[^а-яА-Я]', '', resourcesData[key])):
                     if (len(keyList)): keyList.pop()
                     continue
                 elif textExclusion.lower() in resourcesData[key].lower():
