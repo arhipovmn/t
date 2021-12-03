@@ -265,7 +265,9 @@ def translite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: 
             pathKeyList = file.path.partition(pathModule)[2].split('\\')
             pathKeyListLastEl = pathKeyList[len(pathKeyList)-1].split('.')
             pathKeyList[len(pathKeyList)-1] = pathKeyListLastEl[0]
+            pathKeyList = list(dict.fromkeys(pathKeyList))
             pathKey = '.'.join(pathKeyList)+'.'+camelCase
+            pathKey = re.sub('\.components', '', pathKey)
             print('Или такой ключ: '+moduleName+pathKey, end='\n')
         except:
             pass
