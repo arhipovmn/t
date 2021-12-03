@@ -47,9 +47,9 @@ class EmptyValueKey(Exception):
 class ForbiddenRewriting(Exception):
     """Исключение если будет перезапись ключа"""
 
-    def __init__(self, key, tKey):
-        self.key = key
+    def __init__(self, tKey, tValue):
         self.tKey = tKey
+        self.tValue = tValue
 
 
 class NoSelect(Exception):
@@ -94,10 +94,10 @@ def checkTKey(textKey: str) -> None:
             raise EmptyValueKey(textKey)
         if (len(listKey) == 0):
             if key in structure:
-                raise ForbiddenRewriting(key, textKey)
+                raise ForbiddenRewriting(textKey, structure[key] if type(structure[key]) == str else '{ Object }')
         else:
             if key in structure and type(structure[key]) == str:
-                raise ForbiddenRewriting(key, textKey)
+                raise ForbiddenRewriting(textKey, structure[key])
             else:
                 structure[key] = structure[key] if key in structure else {}
                 checkStructure(structure[key], listKey)
@@ -229,6 +229,27 @@ def checkVar(t: str, inputEnable: bool = True) -> Union[List[dict], List]:
     return []
 
 
+def getKey(camelCase: str, pathKey: str, translation: str, tRu: str, file: os.DirEntry) -> str:
+    try:
+        tKey = input('Напишите ключ для перевода: ')
+        if tKey == '':
+            if camelCase == '':
+                raise EmptyValue
+            tKey = moduleName+'.'+camelCase
+        if tKey == '2':
+            tKey = moduleName+pathKey
+        checkTKey(tKey)
+        return tKey
+    except EmptyValueKey as e:
+        print(Fore.RED+'Один из ключей: '+e.tKey +
+                ' - пуст. Ключ не может быть пустым! Повторите перевод', end='\n')
+        return getKey(camelCase, pathKey, translation, tRu, file)
+    except ForbiddenRewriting as e:
+        print(Fore.RED+'Ошибка! В указанный ключ: '+e.tKey+', уже записано: '+e.tValue, end='\n')
+        print(Fore.RED+'Повторите перевод, укажите другой ключ...', end='\n')
+        return getKey(camelCase, pathKey, translation, tRu, file)
+    
+
 def translite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: str, textReplace: str) -> None:
     """Указываем перевод строки и всякие проверки строки...
 
@@ -256,7 +277,7 @@ def translite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: 
         varText = getVarText(checkVar(tRu))
         print('', end='\n')
         print(Fore.MAGENTA +
-              'Для построения дерева ключей можно использовать символ "."\n----------\nНапример при вводе: '+moduleName+'.example.getData - итоговое выражение для перевода будет таким: t(\''+moduleName+'.example.getData\', { ... })\nИмя модуля ('+moduleName+') автоматически НЕ добавляется!\nВ файл с переводом будет добавлено:\n\n'+moduleName+': {\n    example: {\n        getData: \''+tRu+'\',\n    },\n},\n----------', end='\n\n')
+                'Для построения дерева ключей можно использовать символ "."\n----------\nНапример при вводе: '+moduleName+'.example.getData - итоговое выражение для перевода будет таким: t(\''+moduleName+'.example.getData\', { ... })\nИмя модуля ('+moduleName+') автоматически НЕ добавляется!\nВ файл с переводом будет добавлено:\n\n'+moduleName+': {\n    example: {\n        getData: \''+tRu+'\',\n    },\n},\n----------', end='\n\n')
         camelCase = getCamelCase(translation)
         print('', end='\n')
         print('Предлагаем следующий ключ: '+moduleName+'.'+camelCase, end='\n')
@@ -273,14 +294,7 @@ def translite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: 
             pass
         print('', end='\n')
         print(Fore.MAGENTA+'Оставьте поле пустым, чтобы принять '+('первый ' if pathKey != '' else '')+'предложенный вариант'+(' или введите цифру "2", чтобы принять второй вариант ключа' if pathKey != '' else ''), end='\n')
-        tKey = input('Напишите ключ для перевода: ')
-        if tKey == '':
-            if camelCase == '':
-                raise EmptyValue
-            tKey = moduleName+'.'+camelCase
-        if tKey == '2':
-            tKey = moduleName+pathKey
-        checkTKey(tKey)
+        tKey = getKey(camelCase, pathKey, translation, tRu, file)
         replaceTextY = '{t(\''+tKey+'\'' + \
             ('' if varText == '' else ', { '+varText+' }')+')}'
         replaceTextN = 't(\''+tKey+'\'' + \
@@ -343,15 +357,6 @@ def translite(file: os.DirEntry, lines: List[str], numLine: int, textExclusion: 
                     print('', end='\n\n')
     except EmptyValue:
         print(Fore.RED+'Ошибка! Значение не может быть пустым, повторите перевод', end='\n')
-        translite(file, lines, numLine, textExclusion, textReplace)
-    except EmptyValueKey as e:
-        print(Fore.RED+'Один из ключей: '+e.tKey +
-              ' - пуст. Ключ не может быть пустым! Повторите перевод', end='\n')
-        translite(file, lines, numLine, textExclusion, textReplace)
-    except ForbiddenRewriting as e:
-        print(Fore.RED+'Ошибка! В указанный ключ: '+e.key +
-              ' ('+e.tKey+') уже что-то было записано.', end='\n')
-        print(Fore.RED+'Повторите перевод, укажите другой ключ...', end='\n')
         translite(file, lines, numLine, textExclusion, textReplace)
     except Exception:
         print(Fore.RED+'Хм, какая-то не предвиденная ошибка =/ ... попробуйте перевести повторно', end='\n')
