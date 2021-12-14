@@ -1,5 +1,3 @@
-
-from io import TextIOWrapper
 import os
 from dotenv import load_dotenv, dotenv_values
 import re
@@ -637,6 +635,8 @@ def selectAction(file: os.DirEntry, lines: List[str], numLine: int, textExclusio
                   option['value'] + '" (ключ: "' + option['key'] + '");')
 
     select = input(': ')
+    if select == '': 
+        select = '1'
     if select == '1':
         print(Fore.MAGENTA+' ... игнорировано', end='\n')
     elif select == '2':
@@ -654,8 +654,6 @@ def selectAction(file: os.DirEntry, lines: List[str], numLine: int, textExclusio
         print(Fore.MAGENTA+' ... используем выбранный существующий перевод', end='\n')
         setOption(file, lines, numLine, optionsKey[int(
             select)-5], textExclusion, textReplace)
-    else:
-        selectAction(file, lines, numLine, textExclusion, textReplace)
 
 
 def parseFile(file: os.DirEntry) -> None:
